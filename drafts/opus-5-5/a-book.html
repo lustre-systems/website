@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+try { const t = localStorage.getItem('lustre-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch {}
+</script>
+<style>
+.bar-end { display: flex; align-items: center; gap: 10px; }
+.theme-toggle { width: 40px; height: 40px; flex: none; border-radius: 999px; border: 1.5px solid currentColor; background: transparent; color: inherit; display: grid; place-items: center; cursor: pointer; padding: 0; opacity: 0.85; }
+.theme-toggle:hover { opacity: 1; }
+.theme-toggle svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.theme-toggle .sun { display: none; }
+.is-dark .theme-toggle .sun { display: block; }
+.is-dark .theme-toggle .moon { display: none; }
+</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Lustre · The Book</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=Kalam:wght@400;700&family=DM+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: an exercise-book page (feint blue rules, red margin) that the app lands on top of.
+   Handwriting is the "before"; the app's own sans is the "after". */
+:root {
+    --paper: #fbfcfe;
+    --rule: #d6e1f1;
+    --margin: #e0625a;
+    --ink: #16181d;
+    --ink-2: #4a4f5a;
+    --ink-3: #7d8391;
+    --pen: #2440a8;
+    --card: #ffffff;
+    --line: #e4e8ef;
+    --phone: #111114;
+    --chip: #eef2fb;
+
+    --display: "Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
+    --body: "Instrument Sans", system-ui, -apple-system, sans-serif;
+    --hand: "Kalam", "Comic Sans MS", cursive;
+    --mono: "DM Mono", ui-monospace, monospace;
+
+    --rule-gap: 32px;
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --paper: #10131a;
+        --rule: #1f2736;
+        --margin: #b8514b;
+        --ink: #edf0f5;
+        --ink-2: #b3b9c6;
+        --ink-3: #858c9b;
+        --pen: #8ea6ff;
+        --card: #171b24;
+        --line: #283041;
+        --phone: #05060a;
+        --chip: #1b2233;
+        color-scheme: dark;
+    }
+}
+:root[data-theme="dark"] {
+    --paper: #10131a;
+    --rule: #1f2736;
+    --margin: #b8514b;
+    --ink: #edf0f5;
+    --ink-2: #b3b9c6;
+    --ink-3: #858c9b;
+    --pen: #8ea6ff;
+    --card: #171b24;
+    --line: #283041;
+    --phone: #05060a;
+    --chip: #1b2233;
+    color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--body);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+a { color: var(--pen); }
+:focus-visible { outline: 2px solid var(--pen); outline-offset: 3px; border-radius: 4px; }
+
+.wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-inline: clamp(16px, 4vw, 40px);
+}
+
+/* ——— top bar ——— */
+.bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding-block: 22px;
+}
+.logo { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; }
+.logo svg { width: 22px; height: 28px; }
+.logo .word { font-family: var(--body); font-weight: 600; letter-spacing: 0.34em; font-size: 15px; }
+.logo .word b { color: var(--pen); font-weight: 600; font-size: 10px; letter-spacing: 0.4em; margin-inline-start: 6px; }
+.bar a.talk {
+    font-weight: 600; font-size: 15px; text-decoration: none;
+    color: var(--ink); border: 1.5px solid var(--ink); border-radius: 999px; padding: 8px 16px;
+}
+.bar a.talk:hover { background: var(--ink); color: var(--paper); }
+
+/* ——— hero ——— */
+.hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(28px, 5vw, 64px);
+    align-items: center;
+    padding-block: clamp(24px, 5vw, 56px) clamp(48px, 7vw, 96px);
+}
+.hero h1 {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(2.5rem, 6.2vw, 4.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    margin: 0 0 22px;
+    text-wrap: balance;
+}
+.hero h1 .strike {
+    position: relative;
+    white-space: nowrap;
+}
+.hero h1 .strike::after {
+    content: "";
+    position: absolute;
+    inset-inline: -4px;
+    top: 54%;
+    height: 0.09em;
+    background: var(--margin);
+    border-radius: 2px;
+    transform: rotate(-2.5deg);
+}
+.hero .lede { font-size: clamp(1.05rem, 1.6vw, 1.2rem); color: var(--ink-2); max-width: 34rem; margin: 0 0 28px; }
+.ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+.btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-weight: 600; font-size: 16px; text-decoration: none;
+    padding: 14px 22px; border-radius: 999px;
+    border: 1.5px solid var(--ink);
+    color: var(--ink); background: transparent;
+    cursor: pointer; font-family: inherit;
+}
+.btn.solid { background: var(--ink); color: var(--paper); }
+.btn svg { width: 18px; height: 18px; }
+.btn:hover { transform: translateY(-1px); }
+
+/* the notebook + phone */
+.stage { position: relative; min-height: 520px; }
+.page {
+    position: absolute;
+    inset: 0 18% 6% 0;
+    background:
+        linear-gradient(to right, transparent 46px, var(--margin) 46px, var(--margin) 48px, transparent 48px),
+        repeating-linear-gradient(to bottom, transparent 0, transparent calc(var(--rule-gap) - 1px), var(--rule) calc(var(--rule-gap) - 1px), var(--rule) var(--rule-gap)),
+        var(--card);
+    background-position: 0 0, 0 14px, 0 0;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    box-shadow: 0 30px 60px -30px rgba(20, 30, 60, 0.35);
+    transform: rotate(-3deg);
+    padding: 14px 18px 18px 62px;
+    font-family: var(--hand);
+    color: var(--pen);
+    font-size: 19px;
+    line-height: var(--rule-gap);
+    overflow: hidden;
+}
+.page .date { font-weight: 700; font-size: 21px; }
+.page p { margin: 0; white-space: nowrap; }
+.page .t { display: inline-block; width: 58px; }
+.page .x { text-decoration: line-through; text-decoration-color: var(--margin); text-decoration-thickness: 2px; }
+.page .note { color: var(--margin); font-size: 17px; }
+.page .scrawl { transform: rotate(-4deg); display: inline-block; }
+.phone {
+    position: absolute;
+    inset-inline-end: 0;
+    bottom: 0;
+    width: min(60%, 290px);
+    aspect-ratio: 540 / 1060;
+    max-width: 100%;
+    border-radius: 34px;
+    border: 9px solid var(--phone);
+    background: var(--phone);
+    box-shadow: 0 40px 80px -30px rgba(10, 15, 40, 0.55);
+    overflow: hidden;
+    transform: rotate(3deg);
+}
+.phone img { display: block; width: 100%; height: 100%; object-fit: cover; }
+
+/* ——— sections ——— */
+section.block { padding-block: clamp(56px, 8vw, 104px); border-top: 1px solid var(--line); }
+.kicker {
+    font-family: var(--hand);
+    color: var(--margin);
+    font-size: 22px;
+    line-height: 1.1;
+    margin: 0 0 8px;
+    transform: rotate(-1.5deg);
+    display: inline-block;
+}
+h2 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: clamp(1.9rem, 4vw, 3rem);
+    line-height: 1.04;
+    letter-spacing: -0.03em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+    max-width: 22ch;
+}
+.intro { color: var(--ink-2); max-width: 40rem; margin: 0; }
+
+/* before / after rows */
+.swaps { display: grid; gap: 0; margin-top: 48px; }
+.swap {
+    display: grid;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.4fr);
+    gap: clamp(20px, 4vw, 56px);
+    padding-block: 28px;
+    border-top: 1px dashed var(--rule);
+}
+.swap:last-child { border-bottom: 1px dashed var(--rule); }
+.swap .before {
+    font-family: var(--hand);
+    color: var(--pen);
+    font-size: 22px;
+    line-height: 1.35;
+    position: relative;
+    padding-inline-start: 22px;
+}
+.swap .before::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 0;
+    top: 4px; bottom: 4px;
+    width: 2px;
+    background: var(--margin);
+}
+.swap h3 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 1.35rem;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+    margin: 0 0 8px;
+}
+.swap p { margin: 0; color: var(--ink-2); }
+.mono { font-family: var(--mono); font-size: 0.88em; background: var(--chip); padding: 1px 6px; border-radius: 5px; color: var(--ink); }
+
+/* screens strip */
+.screens {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: clamp(12px, 2vw, 24px);
+    margin-top: 44px;
+}
+.screens figure { margin: 0; display: grid; gap: 12px; }
+.screens .shot {
+    border-radius: 22px;
+    border: 6px solid var(--phone);
+    background: var(--phone);
+    overflow: hidden;
+    aspect-ratio: 540 / 1060;
+    max-width: 100%;
+}
+.screens img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.screens figcaption { font-size: 15px; color: var(--ink-2); line-height: 1.45; }
+.screens figcaption b { color: var(--ink); display: block; font-weight: 600; }
+
+/* two-up */
+.pair { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(28px, 5vw, 72px); }
+.pair h3 { font-family: var(--display); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; margin: 0 0 10px; line-height: 1.15; }
+.pair p { margin: 0 0 12px; color: var(--ink-2); }
+
+/* contact */
+.contact {
+    margin-block: clamp(56px, 8vw, 104px);
+    background:
+        linear-gradient(to right, transparent 46px, var(--margin) 46px, var(--margin) 48px, transparent 48px),
+        repeating-linear-gradient(to bottom, transparent 0, transparent 31px, var(--rule) 31px, var(--rule) 32px),
+        var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: clamp(28px, 5vw, 56px) clamp(20px, 5vw, 56px) clamp(28px, 5vw, 56px) clamp(64px, 8vw, 96px);
+}
+.contact h2 { max-width: 18ch; }
+.contact .intro { margin-bottom: 26px; }
+.addr {
+    display: flex; flex-wrap: wrap; gap: 10px 24px; margin-top: 20px;
+    font-family: var(--mono); font-size: 15px; color: var(--ink-2);
+}
+.addr span { user-select: all; }
+.copy {
+    font: inherit; font-size: 13px; color: var(--pen); background: none; border: 0; padding: 0 0 0 6px; cursor: pointer; text-decoration: underline;
+}
+
+footer { padding-block: 32px 48px; border-top: 1px solid var(--line); color: var(--ink-3); font-size: 14px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+footer a { color: var(--ink-3); }
+
+.onboard { display: inline-flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 600; color: var(--ink); background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 6px 14px 6px 12px; margin-bottom: 22px; }
+.onboard .live { width: 8px; height: 8px; border-radius: 50%; background: var(--pen); box-shadow: 0 0 0 4px var(--chip); }
+.proof { list-style: none; padding: 0; margin: 0 0 30px; display: grid; gap: 10px; max-width: 34rem; }
+.proof li { position: relative; padding-inline-start: 30px; color: var(--ink-2); font-size: 16px; line-height: 1.45; }
+.proof li::before { content: "✓"; position: absolute; inset-inline-start: 0; top: -4px; font-family: var(--hand); font-weight: 700; font-size: 22px; color: var(--margin); }
+.proof b { color: var(--ink); font-weight: 600; }
+.steps { list-style: none; padding: 0; margin: 40px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 40px); counter-reset: step; }
+.steps li { counter-increment: step; display: grid; gap: 6px; align-content: start; }
+.steps li::before { content: counter(step); font-family: var(--hand); font-weight: 700; color: var(--margin); font-size: 44px; line-height: 1; }
+.steps h3 { font-family: var(--display); font-weight: 700; font-size: 1.3rem; letter-spacing: -0.015em; margin: 0; }
+.steps p { margin: 0; color: var(--ink-2); }
+
+@media (max-width: 860px) {
+    .steps { grid-template-columns: minmax(0, 1fr); }
+    .hero { grid-template-columns: minmax(0, 1fr); }
+    .stage { min-height: 460px; }
+    .screens { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .swap, .pair { grid-template-columns: minmax(0, 1fr); }
+    .swap { gap: 12px; }
+}
+@media (max-width: 420px) {
+    .page { inset: 0 22% 10% 0; font-size: 16px; padding-inline-start: 56px; }
+    .page .t { width: 48px; }
+    .stage { min-height: 420px; }
+}
+@media (prefers-reduced-motion: no-preference) {
+    .page { animation: settle-page 0.9s cubic-bezier(.2,.8,.2,1) both; }
+    .phone { animation: settle-phone 1s 0.15s cubic-bezier(.2,.8,.2,1) both; }
+    @keyframes settle-page { from { transform: rotate(-6deg) translateY(12px); } }
+    @keyframes settle-phone { from { transform: rotate(8deg) translate(20px, 30px); } }
+}
+</style>
+
+<div class="wrap">
+    <header class="bar">
+        <a class="logo" href="#top" aria-label="Lustre Clinic">
+            <svg viewBox="0 0 102 120" aria-hidden="true"><path fill="currentColor" d="M42 2 L64 0 C53 30 40 70 34 94 Q33 103 43 103 L96 103 L100 118 L8 118 C1 118 -1 113 1 107 C7 74 25 32 42 2 Z"/></svg>
+            <span class="word">USTRE<b>CLINIC</b></span>
+        </a>
+        <div class="bar-end">
+            <button class="theme-toggle" type="button" aria-label="Switch to dark mode">
+                <svg class="moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>
+                <svg class="sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+            </button>
+            <a class="talk" href="#talk">Ask to see it</a>
+        </div>
+    </header>
+
+    <main id="top">
+        <section class="hero">
+            <div>
+                <span class="onboard"><span class="live"></span>Our first clinic is already on board</span>
+                <h1>Clinic software your secretary will <span class="strike">put up with</span> enjoy using.</h1>
+                <p class="lede">
+                    Most clinic software looks like a tax form. Lustre looks and feels like the apps already
+                    on her phone: the whole day on one screen, big clear buttons, every desk task a few taps away.
+                    It's as quick as writing in the book, and a lot nicer to look at.
+                </p>
+                <ul class="proof">
+                    <li><b>Designed, not just built.</b> Every screen is drawn for one hand at a busy desk.</li>
+                    <li><b>We set it up and train your team.</b> Nobody has to learn it alone.</li>
+                    <li><b>Built with our first clinic,</b> around how their front desk really runs.</li>
+                </ul>
+                <div class="ctas">
+                    <a class="btn solid" href="#talk">See it on your phone</a>
+                    <a class="btn" href="#slips">What changes</a>
+                </div>
+            </div>
+
+            <div class="stage" aria-label="A page from a paper appointment book next to the Lustre day view">
+                <div class="page" aria-hidden="true">
+                    <p class="date">Sat 26 Sep</p>
+                    <p><span class="t">10:05</span>Nour A. filling</p>
+                    <p><span class="t">11:00</span>Kareem H. crown 2/2</p>
+                    <p><span class="t x">11:00</span><span class="x">Mona?</span> <span class="note">clash!</span></p>
+                    <p><span class="t">11:45</span>Laila M. consult</p>
+                    <p><span class="t"></span><span class="note">owes 300 (or 500?)</span></p>
+                    <p><span class="t">12:25</span>Omar S. zirconia</p>
+                    <p><span class="t">1:10</span>Sara E. <span class="x">follow up</span></p>
+                    <p><span class="scrawl note">call back 010… about Thurs</span></p>
+                    <p><span class="t">1:55</span>Yassin, bring pano</p>
+                    <p><span class="note">remind tmrw's ppl!!</span></p>
+                </div>
+                <div class="phone"><img src="../screenshots/day.png" alt="Lustre's day view: one patient at the desk, one in the chair, one waiting, three to check in"></div>
+            </div>
+        </section>
+
+        <section class="block">
+            <span class="kicker">have a look</span>
+            <h2>The real app. Not a mockup.</h2>
+            <p class="intro">These are the screens your secretary and doctor use all day. Clean, calm and readable at arm's length, in English or Arabic.</p>
+            <div class="screens">
+                <figure>
+                    <div class="shot"><img src="../screenshots/day.png" alt="Day view" loading="lazy"></div>
+                    <figcaption><b>The day</b>Who's at the desk, who's in the chair, who's waiting, who's next.</figcaption>
+                </figure>
+                <figure>
+                    <div class="shot"><img src="../screenshots/record.png" alt="A patient's record" loading="lazy"></div>
+                    <figcaption><b>A patient</b>Every visit, what's outstanding, and a WhatsApp button.</figcaption>
+                </figure>
+                <figure>
+                    <div class="shot"><img src="../screenshots/money.png" alt="Month's finances" loading="lazy"></div>
+                    <figcaption><b>The money</b>Charged, collected and still due, for any period.</figcaption>
+                </figure>
+                <figure>
+                    <div class="shot"><img src="../screenshots/patients.png" alt="Patient register" loading="lazy"></div>
+                    <figcaption><b>The register</b>Search by name or number. Balances show at a glance.</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <section class="block" id="slips">
+            <span class="kicker">what the book lets slip</span>
+            <h2>The same day, with fewer things missed.</h2>
+            <p class="intro">
+                Lustre doesn't ask the practice to work differently. Patients still arrive, get seen, pay and
+                book again. These are the gaps it closes.
+            </p>
+
+            <div class="swaps">
+                <div class="swap">
+                    <div class="before">Two names on one line, found out when both patients walk in.</div>
+                    <div>
+                        <h3>A slot can only hold one booking</h3>
+                        <p>If a time overlaps another patient's, the booking doesn't save and she's told why. The rule lives in the clinic's database, so no screen can get around it.</p>
+                    </div>
+                </div>
+                <div class="swap">
+                    <div class="before">"Remind tomorrow's people", written in the margin, done when there's time.</div>
+                    <div>
+                        <h3>Reminders that come back until they're done</h3>
+                        <p>Every evening at <span class="mono">19:00</span> the app lists tomorrow's patients with the message already written. One tap opens that patient's WhatsApp chat. The notification keeps coming back until the list is cleared.</p>
+                    </div>
+                </div>
+                <div class="swap">
+                    <div class="before">"Owes 300 (or 500?)" three pages back, somewhere in August.</div>
+                    <div>
+                        <h3>Every balance, carried across visits</h3>
+                        <p>Paying part now and the rest next time is normal, and the app treats it that way. Each patient carries a running balance, and the doctor sees what was charged, collected and still due for the month without reading the book.</p>
+                    </div>
+                </div>
+                <div class="swap">
+                    <div class="before">Flipping back through last year for someone's number.</div>
+                    <div>
+                        <h3>Records you can search</h3>
+                        <p>Find a patient by name or phone number and see every visit, what was done, what they paid, and the answers to the doctor's own intake questions.</p>
+                    </div>
+                </div>
+                <div class="swap">
+                    <div class="before">The patient who didn't come, noticed a week later.</div>
+                    <div>
+                        <h3>Missed appointments wait on a screen</h3>
+                        <p>A booking that's still open after its day stays on a list until she decides what happened. The app never marks anyone a no-show on its own.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+
+        <section class="block">
+            <div class="pair">
+                <div>
+                    <span class="kicker">paper can stay</span>
+                    <h3>The doctor can keep writing on paper.</h3>
+                    <p>During the visit the doctor writes as usual. The secretary enters it afterwards, in the quiet while a patient is in the chair. Taking payment never waits for that.</p>
+                    <p>If the power goes, both phones still show today's and tomorrow's schedule, clearly marked as not live. The practice can always run a day on paper.</p>
+                </div>
+                <div>
+                    <span class="kicker">it stays with you</span>
+                    <h3>Patient records stay in the clinic.</h3>
+                    <p>The records live on a computer at the practice, reachable only from the practice's own phones. An encrypted copy goes each night to the doctor's own Google Drive, in case that computer is lost.</p>
+                    <p>The app never sends a message by itself. Every WhatsApp goes from her own phone, so the clinic's number is never flagged for automated messaging.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="block">
+            <span class="kicker">you won't be left alone with it</span>
+            <h2>We set it up. Then we teach it.</h2>
+            <ol class="steps">
+                <li><h3>We install it</h3><p>The clinic computer, the secretary's phone and the doctor's phone, set up and connected.</p></li>
+                <li><h3>We put your clinic in it</h3><p>Your prices, procedures, branches, appointment lengths and reminder wording, ready before day one.</p></li>
+                <li><h3>We train your team</h3><p>We sit with your secretary and doctor and go through a real day: booking, check-in, payment and reminders.</p></li>
+            </ol>
+        </section>
+
+        <section class="contact" id="talk">
+            <span class="kicker">come and see</span>
+            <h2>Try a whole day on your own phone.</h2>
+            <p class="intro">
+                Lustre has a demo mode with sample patients and a made-up day, so you can book, check in and take
+                payment before anything is set up. Message me and I'll get it onto your phone.
+            </p>
+            <div class="ctas">
+                <a class="btn solid" href="https://wa.me/20XXXXXXXXXX" data-todo="whatsapp-number">
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.1-1.2l-.5-.3Z"/></svg>
+                    WhatsApp
+                </a>
+                <a class="btn" href="mailto:youssef.alshenawy@gmail.com?subject=Lustre%20for%20our%20clinic">Email</a>
+            </div>
+            <div class="addr">
+                <div><span id="email-a">youssef.alshenawy@gmail.com</span><button class="copy" type="button" data-copy="email-a">copy</button></div>
+                <div><span id="wa-a">+20 XX XXXX XXXX</span><button class="copy" type="button" data-copy="wa-a">copy</button></div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <span>Lustre Clinic · Android · English and Arabic</span>
+        <span>Built by Youssef Hany Galal · <a href="https://github.com/Youssef-codin/lustre-clinic">source</a></span>
+    </footer>
+</div>
+
+<script>
+document.querySelectorAll('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+        const el = document.getElementById(btn.dataset.copy);
+        const text = el.textContent.trim();
+        const done = () => { btn.textContent = 'copied'; setTimeout(() => { btn.textContent = 'copy'; }, 1600); };
+        const select = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+        try {
+            navigator.clipboard.writeText(text).then(done, select);
+        } catch { select(); }
+    });
+});
+</script>
+
+<script>
+(() => {
+    const root = document.documentElement;
+    const media = matchMedia('(prefers-color-scheme: dark)');
+    const btn = document.querySelector('.theme-toggle');
+    const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : media.matches;
+    const sync = () => {
+        root.classList.toggle('is-dark', isDark());
+        btn.setAttribute('aria-label', isDark() ? 'Switch to light mode' : 'Switch to dark mode');
+    };
+    btn.addEventListener('click', () => {
+        root.dataset.theme = isDark() ? 'light' : 'dark';
+        try { localStorage.setItem('lustre-theme', root.dataset.theme); } catch {}
+        sync();
+    });
+    media.addEventListener('change', sync);
+    sync();
+})();
+</script>
+</html>
