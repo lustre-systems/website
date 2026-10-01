@@ -9,5 +9,5 @@
         // /privacy is linked from Google's OAuth consent screen, so it's served as-is, without a redirect.
         "html_handling": "drop-trailing-slash"
     },
-    "routes": [{ "pattern": "lustresystems.com", "custom_domain": true }]
+    "routes": [{ "pattern": "clinics.lustresystems.com", "custom_domain": true }]
 }

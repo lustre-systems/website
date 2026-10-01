@@ -1,6 +1,6 @@
-# lustresystems.com
+# clinics.lustresystems.com
 
-The public site for Lustre: the landing page, the privacy policy, and (later)
+The public site for Lustre Clinics: the landing page, the privacy policy, and (later)
 the try-it demo embedded from `demo.lustresystems.com`.
 
 Built with [Astro](https://docs.astro.build) and deployed as static files.
