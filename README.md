@@ -15,7 +15,7 @@ bun run build    # static output in dist/
 
 | Route      | Source                     | Notes                                                         |
 | ---------- | -------------------------- | ------------------------------------------------------------- |
-| `/`        | `src/pages/index.astro`    | Carried over from `lustre-clinic/docs/`; becomes the landing page. |
+| `/`        | `src/pages/index.astro`    | The landing page. Began as `drafts/opus-5-5/i-mine.html`; edit it here now. |
 | `/privacy` | `src/pages/privacy.astro`  | Linked from the Google OAuth consent screen. Keep it reachable. |
 
 The app itself lives in [lustre-systems/lustre-clinic](https://github.com/lustre-systems/lustre-clinic).

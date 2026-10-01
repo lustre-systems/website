@@ -1,81 +1,951 @@
 ---
-import Layout from '../layouts/Layout.astro';
+// The public landing page. It began as drafts/opus-5-5/i-mine.html and is edited here from now on.
+// It's a whole document of its own rather than a Layout page: the docs styles would fight it.
+const title = 'Lustre · Clinic software your secretary will enjoy using';
+const description = "Appointments, patients and payments for dental clinics, on the secretary's and the doctor's phones. Kept on a computer at your clinic, backed up encrypted to the doctor's Google Drive. We set it up and train your team.";
+const canonical = new URL('/', Astro.site);
+const image = new URL('/og.png', Astro.site);
 ---
 
-<Layout
-    title="Lustre Clinic"
-    description="Clinic management software for a single dental practice. Records stay on a server the clinic owns; encrypted backups go to the doctor's own Google Drive."
->
-    <div class="page">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{title}</title>
+<meta name="description" content={description}>
+<link rel="canonical" href={canonical}>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Lustre">
+<meta property="og:title" content={title}>
+<meta property="og:description" content={description}>
+<meta property="og:url" content={canonical}>
+<meta property="og:image" content={image}>
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#111114">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<script is:inline>
+document.documentElement.classList.add('js');
+try { const t = localStorage.getItem('lustre-theme'); if (t === 'light' || t === 'dark') document.documentElement.dataset.theme = t; } catch {}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,600&family=DM+Mono:wght@400;500&family=Kalam:wght@400;700&display=swap">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<style is:global>
+/* The landing page, moved from drafts/opus-5-5/i-mine.html (edit it here now). I: your own picks. Starts as H (D's base, A's checkmarks, F's sections) with a floating
+   pill bar like Pith's and the refined Lustre wordmark. The hero phones are stills rendered
+   from a real phone model, so there's no WebGL at runtime.
+   Below the hero: E's paper book (drag across), F's why, the setup timeline (C1 in setup-options.html), contact.
+   The hero is the day view's black card (NowCard.tsx) as a whole section, inset with rounded corners;
+   the contact and footer are the same ink, edge to edge.
+   Radius rule: interactive = pill, panels = 28px, devices = 46px. One accent (brand blue). */
+:root {
+    --bg: #f4f4f6;
+    --bg-2: #ffffff;
+    --surface: #ffffff;
+    --line: rgba(17, 17, 20, 0.08);
+    --ink: #111114;
+    --ink-2: #4a4a52;
+    --muted: #85858e;
+    --accent: #2f5bff;
+    --accent-2: #1d3bc7;
+    --accent-soft: #e9edff;
+    --on-accent: #ffffff;
+    --glow: rgba(47, 91, 255, 0.16);
+    --shadow: rgba(24, 28, 70, 0.26);
+    --paper: #fdfdff;
+    --rule: #d9e3f3;
+    --margin: #e0625a;
+    --pen: #2440a8;
+    --ok-t: #0d7a3d;
+    --due-t: #b3411a;
+    --bad-t: #b21e15;
 
-        <header class="masthead">
-            <span class="eyebrow">Dental practice software</span>
-            <h1>Lustre Clinic</h1>
-            <p class="lede">
-                Appointment, record and payment software for a single dental practice. The clinic's
-                records live on a computer in the clinic; an encrypted copy goes each night to the
-                doctor's own Google Drive so the practice survives losing that computer.
-            </p>
-        </header>
+    /* The app's own palette, used only inside device screens. Screens stay light in both
+       themes because the app ships light. */
+    --app-canvas: #f4f4f6;
+    --app-surface: #ffffff;
+    --app-line: #ececef;
+    --app-ink: #111114;
+    --app-muted: #8b8b92;
+    --app-deep: #111114;
+    --app-accent: #2f5bff;
+    --app-accent-soft: #eaeeff;
+    --app-due: #ef5f28;
+    --app-due-soft: #fdeee7;
+    --app-ok: #12a150;
+    --app-ok-soft: #e8f6ee;
+    --app-ok-dark: #8bf0b8;
+    --app-danger: #e5342a;
+    --app-wa: #1f9d54;
 
-        <div class="panel">
-            <p class="meta">
-                Lustre is not a public product. It is not sold, not listed on any app store, and cannot
-                be signed up for. It runs for one practice, on hardware that practice owns, and is used
-                by its dentist and secretary.
-            </p>
+    --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --mono: "DM Mono", ui-monospace, monospace;
+    --hand: "Kalam", "Comic Sans MS", cursive;
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --bg: #0a0a0c;
+        --bg-2: #0f0f12;
+        --surface: #151519;
+        --line: rgba(255, 255, 255, 0.08);
+        --ink: #f4f4f6;
+        --ink-2: #b8b8c1;
+        --muted: #82828b;
+        --accent: #6583ff;
+        --accent-2: #a9baff;
+        --accent-soft: #161c3a;
+        --on-accent: #ffffff;
+        --glow: rgba(101, 131, 255, 0.2);
+        --shadow: rgba(0, 0, 0, 0.7);
+        --paper: #14161c;
+        --rule: #232a39;
+        --margin: #c9594f;
+        --pen: #9bb0ff;
+        --ok-t: #3ccf7f;
+        --due-t: #ff8a5c;
+        --bad-t: #ff7a70;
+        color-scheme: dark;
+    }
+}
+:root[data-theme="dark"] {
+    --bg: #0a0a0c;
+    --bg-2: #0f0f12;
+    --surface: #151519;
+    --line: rgba(255, 255, 255, 0.08);
+    --ink: #f4f4f6;
+    --ink-2: #b8b8c1;
+    --muted: #82828b;
+    --accent: #6583ff;
+    --accent-2: #a9baff;
+    --accent-soft: #161c3a;
+    --on-accent: #ffffff;
+    --glow: rgba(101, 131, 255, 0.2);
+    --shadow: rgba(0, 0, 0, 0.7);
+    --paper: #14161c;
+    --rule: #232a39;
+    --margin: #c9594f;
+    --pen: #9bb0ff;
+    --ok-t: #3ccf7f;
+    --due-t: #ff8a5c;
+    --bad-t: #ff7a70;
+    color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: clip;
+}
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 8px; }
+.wrap { max-width: 1200px; margin: 0 auto; padding-inline: clamp(16px, 4vw, 40px); }
+h2 {
+    font-weight: 700;
+    font-size: clamp(2.1rem, 4.6vw, 3.6rem);
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+    margin: 0;
+    text-wrap: balance;
+}
+h2 em { font-style: italic; font-weight: 600; color: var(--accent); padding-inline-end: 0.04em; }
+.kicker { font-family: var(--mono); font-size: 13px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--muted); margin: 0 0 18px; display: flex; align-items: center; gap: 10px; }
+.kicker::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--accent); }
+.sub { color: var(--ink-2); font-size: clamp(1.02rem, 1.4vw, 1.15rem); max-width: 34rem; margin: 16px 0 0; }
+
+/* ——— buttons ——— */
+.btn {
+    display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+    height: 52px; padding-inline: 24px; border-radius: 999px;
+    font: 600 16px/1 var(--sans); text-decoration: none; white-space: nowrap;
+    border: 0; cursor: pointer;
+    transition: transform .4s var(--ease), background-color .2s, box-shadow .4s var(--ease);
+}
+.btn i { font-size: 19px; }
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--ink); color: var(--bg); }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 30px -12px var(--shadow); }
+.btn-ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 16%, transparent); }
+.btn-ghost:hover { transform: translateY(-2px); }
+
+/* ——— nav: a floating pill ——— */
+.nav { position: sticky; top: 14px; z-index: 30; margin-top: 14px; padding-inline: clamp(12px, 3vw, 24px); }
+.nav-pill {
+    max-width: 1020px; margin: 0 auto; height: 60px;
+    display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 16px;
+    padding-inline: 22px 7px; border-radius: 999px;
+    background: color-mix(in srgb, var(--surface) 68%, transparent);
+    backdrop-filter: saturate(180%) blur(20px);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    box-shadow:
+        inset 0 0 0 1px color-mix(in srgb, var(--ink) 9%, transparent),
+        inset 0 1px 0 color-mix(in srgb, #fff 55%, transparent),
+        0 10px 30px -18px var(--shadow);
+}
+.is-dark .nav-pill { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.09), inset 0 1px 0 rgba(255,255,255,0.06), 0 14px 40px -20px rgba(0,0,0,0.8); }
+.logo { display: flex; align-items: center; text-decoration: none; color: var(--ink); justify-self: start; }
+.logo svg { height: 30px; width: auto; display: block; }
+.nav-links { display: flex; gap: 30px; font-size: 15px; font-weight: 500; }
+.nav-links a { text-decoration: none; color: var(--ink-2); transition: color .2s; }
+.nav-links a:hover { color: var(--ink); }
+.nav-end { display: flex; align-items: center; gap: 8px; justify-self: end; }
+.nav .btn { height: 46px; padding-inline: 22px; font-size: 15px; }
+.btn-cta {
+    color: #fff;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 82%, #fff), var(--accent));
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 8px 22px -10px var(--accent);
+}
+.btn-cta:hover { transform: translateY(-1px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.35), 0 12px 28px -10px var(--accent); }
+.nav .theme-toggle { width: 40px; height: 40px; box-shadow: none; color: var(--ink-2); }
+.nav .theme-toggle:hover { color: var(--ink); }
+.theme-toggle { width: 40px; height: 40px; border-radius: 999px; border: 0; background: transparent; color: var(--ink); display: grid; place-items: center; cursor: pointer; font-size: 19px; box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 14%, transparent); }
+.theme-toggle .sun { display: none; }
+.is-dark .theme-toggle .sun { display: block; }
+.is-dark .theme-toggle .moon { display: none; }
+
+/* ——— hero ——— */
+.hero { position: relative; padding-block: clamp(40px, 7vw, 88px) 0; overflow-x: clip; }
+.hero::before {
+    content: ""; position: absolute; inset: 0 0 auto 30%; height: 90%;
+    background: radial-gradient(ellipse 50% 45% at 60% 55%, var(--glow), transparent 70%);
+    pointer-events: none;
+}
+.hero-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); gap: clamp(24px, 4vw, 56px); align-items: center; }
+.hero h1 {
+    font-weight: 700;
+    font-size: clamp(2.6rem, 5.4vw, 4.6rem);
+    line-height: 0.98;
+    letter-spacing: -0.055em;
+    margin: 24px 0 22px;
+    text-wrap: balance;
+}
+.hero h1 em { font-style: italic; font-weight: 600; color: var(--accent); padding-inline-end: 0.06em; }
+.hero h1 .w { display: inline-block; overflow: clip; vertical-align: top; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.hero h1 .w > span { display: inline-block; }
+.hero .lede { font-size: clamp(1.08rem, 1.5vw, 1.25rem); color: var(--ink-2); max-width: 30rem; margin: 0 0 24px; }
+.hero .ctas { display: flex; flex-wrap: wrap; gap: 12px; }
+
+/* the crossed-out words (as in E): a line drawn through once they've risen in */
+.hero h1 .w.x { padding-inline: 0.08em; margin-inline: -0.08em; }
+.was { position: relative; color: var(--muted); white-space: nowrap; }
+.was::after { content: ""; position: absolute; left: -2%; right: -2%; top: 55%; height: 0.07em; border-radius: 9px; background: var(--accent); transform-origin: left; }
+
+/* the reassurances: small checks in one row */
+.proof { list-style: none; padding: 0; margin: 0 0 32px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; max-width: 34rem; }
+.proof li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 3px 8px; align-items: center; align-content: start; }
+.proof .ck { width: 18px; height: 18px; color: var(--accent); }
+.proof b { font-size: 15px; font-weight: 600; white-space: nowrap; }
+.proof span { grid-column: 2; font-size: 13.5px; line-height: 1.4; color: var(--muted); }
+
+/* "first clinic" as a notification stuck on the phones: the mark, a live dot, a passing shine */
+.hello { position: absolute; z-index: 6; left: -2%; bottom: 20%; display: grid; grid-template-columns: 44px auto; gap: 2px 12px; align-items: center; padding: 10px 20px 10px 10px; border-radius: 20px; overflow: hidden; rotate: -3deg; background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: blur(16px) saturate(160%); -webkit-backdrop-filter: blur(16px) saturate(160%); box-shadow: inset 0 0 0 1px var(--line), 0 24px 46px -18px var(--shadow); }
+.hello .mark { grid-row: span 2; width: 44px; height: 44px; border-radius: 10px; box-shadow: 0 8px 16px -8px rgba(0,0,0,0.5); }
+.hello b { display: flex; align-items: center; gap: 8px; font-size: 14.5px; line-height: 1.2; white-space: nowrap; }
+.hello small { font-size: 13px; color: var(--ink-2); white-space: nowrap; }
+.hello .live { width: 8px; height: 8px; border-radius: 50%; background: #12a150; flex: none; }
+.hello::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 38%, color-mix(in srgb, #fff 55%, transparent) 50%, transparent 62%); translate: -110% 0; }
+
+/* The phones are stills rendered from a Galaxy S25 Ultra model (public/img/, made by
+   drafts/renders/README.md), so the frames and sides are real without any WebGL. They drift
+   with the pointer at different depths and spread apart as the hero scrolls away. */
+.cluster { position: relative; height: clamp(520px, 62vw, 700px); --spread: 0px; }
+.cluster::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: -1%; height: 9%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--shadow) 70%, transparent), transparent); pointer-events: none; }
+/* .shot places each phone; the img inside only pops, so its animation is a plain transform the browser can run off the main thread */
+.cluster .shot { position: absolute; top: 50%; left: 50%; display: block; }
+.cluster .shot img { display: block; height: 100%; width: auto; max-width: none; filter: drop-shadow(0 34px 40px color-mix(in srgb, var(--shadow) 70%, transparent)); }
+.cluster .d-main { height: 92%; transform: translate(-50%, -50%); z-index: 3; }
+.cluster .d-left { height: 76%; transform: translate(calc(-116% - var(--spread)), -46%); z-index: 1; }
+.cluster .d-right { height: 76%; transform: translate(calc(16% + var(--spread)), -54%); z-index: 2; }
+
+/* ——— the paper book, turning into Lustre ——— */
+.ba { padding-block: clamp(80px, 11vw, 140px); overflow-x: clip; }
+/* A taped, slightly crooked page of the book straightens into Lustre's Day screen. It plays by
+   itself the first time it comes into view, and the link under it flips it back and forth. Each
+   app row starts on its paper line and moves to its own place, so Mona slides from the 11:00 clash
+   to her 12:10 slot. The screen is drawn from the real Day screen (Agenda.tsx, Reminders.tsx) and
+   is a fixed 390px phone width at every window size. */
+.pb { text-align: center; }
+.pb h2 { max-width: 15ch; margin-inline: auto; }
+.pb .sub { margin-inline: auto; }
+.pb-desk { display: grid; justify-items: center; margin-top: 64px; }
+.pb-stage { position: relative; width: min(540px, 100%); text-align: left; }
+.pb-face { position: relative; display: grid; grid-template-columns: minmax(0, 1fr); border-radius: 6px; overflow: hidden; box-shadow: 0 40px 80px -48px var(--shadow), inset 0 0 0 1px var(--line); }
+.pb-face > * { grid-area: 1 / 1; min-width: 0; }
+.pb-stage.on-paper .pb-face { cursor: pointer; }
+.pb-tape { position: absolute; z-index: 5; top: -14px; width: 120px; height: 34px; background: rgba(255, 236, 170, 0.62); box-shadow: 0 1px 3px rgba(0,0,0,0.06); pointer-events: none; }
+.pb-tape.l { left: -30px; rotate: -32deg; }
+.pb-tape.r { right: -30px; rotate: 32deg; }
+/* Layers, bottom up: the ruled sheet, the app's canvas fading in over it, the handwriting, the app.
+   The handwriting stays above the canvas so each line is readable until its own row takes over. */
+.pb-face { --row: 62px; }
+.pb-sheet {
+    background:
+        linear-gradient(to right, transparent 62px, var(--margin) 62px, var(--margin) 64px, transparent 64px),
+        repeating-linear-gradient(to bottom, transparent 0 calc(var(--row) - 1px), var(--rule) calc(var(--row) - 1px) var(--row)),
+        var(--paper);
+    background-position: 0 0, 0 30px, 0 0;
+}
+.pb-paper { color: var(--pen); font-family: var(--hand); font-size: 22px; padding: 30px 20px 30px 84px; }
+.pb-paper > div { height: var(--row); display: flex; align-items: center; gap: 16px; white-space: nowrap; overflow: hidden; }
+.pb-paper .t { width: 56px; flex: none; }
+.pb-paper .red { color: var(--margin); }
+.pb-paper s { text-decoration-color: var(--margin); text-decoration-thickness: 2px; }
+.pb-paper .head { font-weight: 700; }
+.pb-canvas { background: var(--app-canvas); opacity: 0; }
+.pb-app { padding: 30px 0; display: flex; justify-content: center; color: var(--app-ink); font-family: var(--sans); pointer-events: none; }
+.pb-stage.on-app .pb-app { pointer-events: auto; }
+.pb-stage [data-k] { will-change: opacity, transform; }
+.pb-toggle { margin-top: 30px; display: inline-flex; align-items: center; gap: 8px; border: 0; background: transparent; padding: 10px 6px; font: 600 15px/1 var(--sans); color: var(--ink-2); cursor: pointer; text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--ink) 22%, transparent); text-decoration-thickness: 1.5px; text-underline-offset: 6px; transition: color 0.2s, text-decoration-color 0.2s; }
+.pb-toggle:hover { color: var(--ink); text-decoration-color: var(--accent); }
+.pb-toggle i { font-size: 17px; }
+.pb-fixes { list-style: none; padding: 0; margin: 56px auto 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; max-width: 1040px; text-align: left; }
+.pb-fixes li { padding: 22px 20px; border-radius: 22px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); font-size: 15px; line-height: 1.45; display: grid; gap: 14px; align-content: start; opacity: 0.72; transition: opacity 0.5s; }
+.pb-fixes li i { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 50%; background: color-mix(in srgb, var(--ink) 6%, transparent); color: var(--muted); font-size: 18px; transition: background 0.5s, color 0.5s, transform 0.5s var(--ease); }
+.pb-fixes li p { margin: 0; color: var(--ink-2); }
+.pb-fixes li b { display: block; font-weight: 600; color: var(--ink); }
+.pb-fixes li.on { opacity: 1; }
+.pb-fixes li.on i { background: var(--accent-soft); color: var(--accent); transform: scale(1.06); }
+.pb-topbar { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 14px; }
+.pb-topbar span { display: inline-flex; align-items: center; gap: 7px; height: 40px; padding-inline: 14px; border-radius: 999px; background: var(--app-surface); font-weight: 600; font-size: 15px; box-shadow: 0 2px 10px -4px rgba(17,17,20,0.18); }
+.pb-topbar span.mono { font: 500 14px/1 var(--mono); letter-spacing: 0.08em; }
+.pb-topbar i { font-size: 16px; }
+.pb-topbar .ph-caret-down { font-size: 13px; color: var(--app-muted); }
+.pb-screen { width: min(390px, 100%); }
+.pb-seg { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; padding: 4px; border-radius: 999px; background: #e9e9ee; }
+.pb-seg button { border: 0; background: transparent; font: 600 15px/1 var(--sans); display: flex; align-items: center; justify-content: center; gap: 8px; height: 42px; border-radius: 999px; color: #55555d; cursor: pointer; white-space: nowrap; transition: background 0.25s, color 0.25s, box-shadow 0.25s; }
+.pb-seg button[aria-selected="true"] { background: var(--app-surface); color: var(--app-ink); box-shadow: 0 2px 8px -4px rgba(0,0,0,0.25); }
+.pb-seg button i { font-size: 17px; }
+.pb-seg button b { font-weight: inherit; }
+.pb-seg button.lit { animation: pb-lit 1.2s var(--ease); }
+@keyframes pb-lit { 0% { box-shadow: 0 0 0 0 rgba(224, 98, 90, 0.55); color: var(--margin); } 100% { box-shadow: 0 0 0 14px rgba(224, 98, 90, 0); } }
+.pb-eyebrow { display: flex; align-items: center; gap: 8px; font: 500 11.5px/1 var(--mono); letter-spacing: 0.22em; color: var(--app-muted); margin: 22px 0 8px; }
+.pb-pane[hidden] { display: none; }
+.pb-pane { animation: pb-pane 0.35s var(--ease); }
+@keyframes pb-pane { from { opacity: 0; transform: translateY(6px); } }
+.pb-row { display: flex; align-items: center; gap: 12px; height: 68px; border-bottom: 1px solid var(--app-line); }
+.pb-row.chair { margin-inline: -10px; padding-inline: 10px; border-radius: 16px; border-bottom-color: transparent; background: var(--app-accent-soft); }
+.pb-clk { width: 74px; flex: none; font: 500 19px/1 var(--mono); letter-spacing: -0.02em; white-space: nowrap; }
+.pb-clk small { font-size: 10px; letter-spacing: 0.06em; color: var(--app-muted); margin-inline-start: 3px; }
+.pb-who { flex: 1; min-width: 0; }
+.pb-who b { display: block; font-weight: 600; font-size: 17px; letter-spacing: -0.015em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pb-who > span { display: flex; align-items: center; gap: 6px; font-size: 14px; color: var(--app-muted); white-space: nowrap; overflow: hidden; }
+.pb-who > span > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.pb-rm .pb-who > span { display: block; text-overflow: ellipsis; }
+.pb-who > span i { font-size: 14px; flex: none; }
+.pb-st { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; font-size: 15px; white-space: nowrap; flex: none; }
+.pb-st i { font-size: 17px; }
+.pb-st.accent { color: var(--app-accent); }
+.pb-st.due { color: var(--app-due); }
+.pb-st.ok { color: var(--app-ok); }
+.pb-ci { display: inline-flex; align-items: center; gap: 6px; height: 40px; padding-inline: 14px; border-radius: 999px; box-shadow: inset 0 0 0 1.5px #d8d8de; font-weight: 600; font-size: 15px; white-space: nowrap; flex: none; }
+.pb-rm { display: flex; align-items: center; gap: 10px; height: 68px; border-bottom: 1px solid var(--app-line); transition: opacity 0.3s, transform 0.35s var(--ease); }
+.pb-rm.gone { opacity: 0; transform: translateX(24px); }
+.pb-rm .x { flex: none; width: 38px; height: 38px; border-radius: 50%; border: 0; background: transparent; box-shadow: inset 0 0 0 1.5px #d8d8de; color: #55555d; display: grid; place-items: center; font-size: 15px; cursor: pointer; }
+.pb-rm .wa { flex: none; display: inline-flex; align-items: center; gap: 7px; border: 0; height: 38px; padding-inline: 14px; border-radius: 999px; background: var(--app-wa); color: #fff; font: 600 14.5px/1 var(--sans); cursor: pointer; }
+.pb-rm .wa i { font-size: 17px; }
+.pb-empty { text-align: center; padding: 48px 12px; color: var(--app-muted); font-size: 14px; }
+.pb-empty i { display: grid; place-items: center; width: 44px; height: 44px; margin: 0 auto 12px; border-radius: 50%; background: #e9e9ee; color: #55555d; font-size: 20px; }
+.pb-empty b { display: block; color: var(--app-ink); font-size: 16px; margin-bottom: 2px; }
+
+/* ——— why clinics pick Lustre (F) ——— */
+.why { padding-block: clamp(40px, 6vw, 80px) clamp(80px, 11vw, 140px); }
+.reasons { margin-top: 48px; display: grid; }
+.reason { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr) 248px; gap: clamp(20px, 4vw, 56px); align-items: center; padding-block: clamp(28px, 4vw, 40px); border-top: 1px solid var(--line); }
+.reason:last-child { border-bottom: 1px solid var(--line); }
+.reason h3 { margin: 0; font-size: clamp(1.8rem, 3.6vw, 2.8rem); letter-spacing: -0.045em; line-height: 1.02; font-weight: 700; }
+.reason h3 span { display: block; }
+.reason h3 em { font-style: italic; font-weight: 600; color: var(--accent); padding-inline-end: 0.04em; }
+.reason p { margin: 0; color: var(--ink-2); font-size: 1.08rem; max-width: 32rem; text-wrap: pretty; }
+.reason p a { color: var(--accent); font-weight: 600; text-decoration: none; white-space: nowrap; }
+.reason p a:hover { text-decoration: underline; }
+/* Every reason gets the same tile, so the right edge reads as one column. */
+.tile { height: 156px; border-radius: 28px; background: var(--surface); box-shadow: inset 0 0 0 1px var(--line); position: relative; overflow: hidden; }
+/* the pen against one tap: the same arrival, written in the book and checked in on the phone */
+.race { display: grid; align-content: center; gap: 12px; padding-inline: 18px; }
+.race > div { display: flex; align-items: center; gap: 10px; height: 50px; padding-inline: 16px; border-radius: 999px; white-space: nowrap; }
+.race-pen { color: var(--pen); font: 400 18px/1 var(--hand); background: color-mix(in srgb, var(--paper) 70%, transparent); box-shadow: inset 0 0 0 1.5px var(--rule); }
+.race-pen i { font-size: 18px; color: var(--muted); }
+.race-tap { justify-content: space-between; background: var(--accent-soft); font-weight: 600; font-size: 15px; }
+.race-tap b { display: inline-flex; align-items: center; gap: 6px; height: 34px; padding-inline: 12px; border-radius: 999px; background: var(--surface); box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ink) 14%, transparent); font-size: 14px; transition: background-color .3s, color .3s, box-shadow .3s; }
+.race-tap .b { display: none; }
+:is(.reason:hover, .reason.lit) .race-tap b { background: var(--app-ok); color: #fff; box-shadow: none; }
+:is(.reason:hover, .reason.lit) .race-tap .a { display: none; }
+:is(.reason:hover, .reason.lit) .race-tap .b { display: inline; }
+.tile-steps { list-style: none; margin: 0; padding: 0 18px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: center; }
+.tile-steps::before { content: ""; position: absolute; top: 50%; left: 52px; right: 52px; margin-top: -14px; border-top: 2px dashed color-mix(in srgb, var(--accent) 35%, transparent); }
+.tile-steps li { position: relative; display: grid; justify-items: center; gap: 10px; font: 500 11px/1 var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); }
+.tile-steps i { width: 48px; height: 48px; border-radius: 50%; display: grid; place-items: center; background: var(--surface); box-shadow: inset 0 0 0 2px var(--accent); color: var(--accent); font-size: 22px; transition: background-color .3s, color .3s; }
+.tile-steps li:last-child i { background: var(--accent); color: var(--on-accent); }
+:is(.reason:hover, .reason.lit) .tile-steps i { background: var(--accent); color: var(--on-accent); }
+:is(.reason:hover, .reason.lit) .tile-steps li:nth-child(2) i { transition-delay: .08s; }
+.clinics { list-style: none; margin: 0; padding: 18px; display: grid; gap: 10px; align-content: center; }
+.clinics li { display: flex; align-items: center; gap: 14px; height: 54px; padding-inline: 8px 18px; border-radius: 999px; background: var(--accent); color: var(--on-accent); }
+.clinics b { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: rgba(255, 255, 255, 0.18); font: 500 14px/1 var(--mono); }
+.clinics span { font-weight: 600; letter-spacing: -0.01em; }
+.clinics li + li { background: transparent; color: var(--ink-2); box-shadow: inset 0 0 0 2px var(--line); outline: 2px dashed color-mix(in srgb, var(--accent) 40%, transparent); outline-offset: -2px; transition: background-color .3s, color .3s; }
+.clinics li + li b { background: var(--accent-soft); color: var(--accent); }
+:is(.reason:hover, .reason.lit) .clinics li + li { background: var(--accent-soft); color: var(--accent); }
+
+/* ——— from first call to first patient (M) ——— */
+.setup { padding-block: clamp(32px, 5vw, 64px) clamp(64px, 8vw, 100px); }
+section[id] { scroll-margin-top: 90px; }
+/* setup's C1 from setup-options.html: the heading stays, a line fills as you scroll */
+.setup-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr); gap: clamp(32px, 6vw, 96px); align-items: start; }
+.setup-side { position: sticky; top: 120px; }
+.setup-side .quiet { margin: 26px 0 0; font-size: 15px; color: var(--muted); max-width: 26rem; display: flex; gap: 8px; align-items: baseline; }
+.setup-side .quiet i { color: var(--accent); transform: translateY(2px); }
+.line { list-style: none; margin: 0; padding: 0 0 0 64px; position: relative; --p: 0; }
+.line::before, .line::after { content: ""; position: absolute; left: 21px; top: 22px; bottom: 22px; width: 2px; border-radius: 2px; background: var(--line); }
+.line::after { background: var(--accent); bottom: auto; height: calc((100% - 44px) * var(--p)); }
+.line li { position: relative; padding-block: 0 clamp(56px, 8vw, 96px); }
+.line li:last-child { padding-bottom: 0; }
+.line .dot { position: absolute; left: -64px; top: 0; width: 44px; height: 44px; border-radius: 50%; background: var(--bg); box-shadow: inset 0 0 0 2px var(--line); display: grid; place-items: center; font: 600 15px/1 var(--mono); color: var(--muted); z-index: 1; transition: background .4s, color .4s, box-shadow .4s; }
+.line li.on .dot { background: var(--accent); color: var(--on-accent); box-shadow: 0 0 0 6px var(--glow); }
+.line h3 { margin: 0; padding-top: 8px; font-size: 1.35rem; letter-spacing: -0.03em; line-height: 1.15; transition: color .4s; }
+.line li:not(.on) h3 { color: var(--muted); }
+.line p { margin: 10px 0 0; color: var(--ink-2); max-width: 30rem; }
+.line li.last h3 { font-size: 1.7rem; }
+.line li.last h3 em { font-style: italic; color: var(--accent); font-weight: 600; }
+
+/* ——— talk ——— */
+/* E's ending, without its phone. */
+.talk { position: relative; overflow: hidden; text-align: center; padding-block: clamp(90px, 12vw, 160px) clamp(80px, 10vw, 130px); border-top: 1px solid var(--line); }
+.talk::before { content: ""; position: absolute; left: 50%; bottom: -420px; width: min(1100px, 140vw); height: 760px; transform: translateX(-50%); background: radial-gradient(closest-side, var(--glow), transparent 70%); pointer-events: none; }
+.talk .wrap { position: relative; }
+.talk h2 { font-size: clamp(2.6rem, 6.4vw, 5.4rem); max-width: 13ch; margin-inline: auto; }
+.talk .sub { margin-inline: auto; }
+.talk .ctas { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 32px; }
+.addr { font-family: var(--mono); font-size: 13.5px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 22px; justify-content: center; margin-top: 18px; }
+.addr span { user-select: all; color: var(--ink-2); }
+.addr button { background: none; border: 0; padding: 12px 8px; margin: -12px 0 -12px 0; color: var(--muted); font: inherit; text-decoration: underline; cursor: pointer; }
+
+footer { border-top: 1px solid var(--line); }
+footer .wrap { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; padding-block: 28px 44px; color: var(--muted); font-size: 14px; }
+
+
+/* ═══ ink: the black card, as a section ═══ */
+:root { --ink-card: #111114; --ink-ring: transparent; --ink-hi: #7f97ff; --ink-text: #f4f4f6; --ink-2t: rgba(244, 244, 246, 0.68); --ink-mt: rgba(244, 244, 246, 0.48); --ink-line: rgba(255, 255, 255, 0.1); }
+.is-dark { --ink-card: #141418; --ink-ring: rgba(255, 255, 255, 0.08); }
+
+/* the hero: tucked up under the nav, the phones rising out of the card's bottom edge */
+.hero { margin: -64px 10px 0; padding-top: calc(64px + clamp(40px, 7vw, 88px)); border-radius: 36px; background: var(--ink-card); color: var(--ink-text); box-shadow: inset 0 0 0 1px var(--ink-ring); overflow: hidden; isolation: isolate; }
+.hero::before { background: radial-gradient(ellipse 50% 45% at 62% 60%, rgba(47, 91, 255, 0.42), transparent 70%); }
+.hero h1 em { color: var(--ink-hi); }
+.was { color: var(--ink-mt); }
+.was::after { background: var(--ink-hi); }
+.hero .lede { color: var(--ink-2t); }
+.proof .ck { color: var(--ink-hi); }
+.proof span { color: var(--ink-mt); }
+.hero .btn-primary { background: #fff; color: #111114; }
+.hero .btn-ghost { color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.22); }
+.cluster::after { display: none; }
+.hello { background: rgba(255, 255, 255, 0.94); color: #111114; }
+.hello small { color: #4a4a52; }
+/* the phones sit a little lower, so the card's edge cuts them like a desk. The card's own bottom padding
+   gives the copy room under its buttons without moving the phones. */
+.cluster { margin-bottom: -6%; }
+.hero { padding-bottom: clamp(40px, 4.5vw, 72px); }
+/* over the card, the nav pill turns to dark glass */
+.nav.over .nav-pill { background: rgba(20, 20, 26, 0.55); box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 14px 40px -20px rgba(0, 0, 0, 0.8); }
+.nav.over .logo, .nav.over .theme-toggle { color: #f4f4f6; }
+.nav.over .nav-links a { color: rgba(244, 244, 246, 0.7); }
+.nav.over .nav-links a:hover { color: #fff; }
+.nav-pill, .nav-pill .logo, .nav-links a, .nav .theme-toggle { transition: background-color .4s, box-shadow .4s, color .3s; }
+
+/* the ending: contact and footer in the same ink, edge to edge */
+.talk { margin-top: clamp(40px, 6vw, 80px); border-top: 1px solid var(--ink-ring); background: var(--ink-card); color: var(--ink-text); }
+.talk::before { background: radial-gradient(closest-side, rgba(47, 91, 255, 0.4), transparent 70%); }
+.talk h2 em { color: var(--ink-hi); }
+.talk .sub { color: var(--ink-2t); }
+.talk .btn-ghost { color: #fff; box-shadow: inset 0 0 0 1.5px rgba(255, 255, 255, 0.22); }
+.addr, .addr button { color: var(--ink-mt); }
+.addr span { color: var(--ink-2t); }
+footer { border-top: 0; background: var(--ink-card); }
+footer .wrap { color: var(--ink-mt); border-top: 1px solid var(--ink-line); padding-block: 26px 34px; }
+
+@media (max-width: 640px) {
+    .hero { margin-top: -60px; padding-top: calc(60px + 32px); border-radius: 28px; }
+}
+
+/* ——— load-in ——— */
+@media (prefers-reduced-motion: no-preference) {
+    .hero h1 .w > span { animation: rise 1s var(--ease) both; animation-delay: calc(var(--i) * 70ms + 100ms); }
+    .hero .lede, .hero .proof, .hero .ctas { animation: fade 1s var(--ease) both; animation-delay: 550ms; }
+    .was::after { transform: scaleX(0); animation: strike .7s .9s var(--ease) forwards; }
+    @keyframes strike { to { transform: scaleX(1); } }
+    /* the phones pop up one at a time, the front one first, then back left and back right: solid the whole way, springing past their spot and settling.
+       with scripts on, it waits (.go) until the page has loaded and all three images are decoded, so none arrives mid-pop */
+    .cluster .shot img { transform-origin: 50% 100%; animation: pop 600ms cubic-bezier(0.33, 1, 0.68, 1) backwards; }
+    .js .cluster:not(.go) .shot img { animation-play-state: paused; }
+    .cluster .d-main img { animation-delay: 80ms; animation-duration: 680ms; }
+    .cluster .d-left img { animation-delay: 260ms; }
+    .cluster .d-right img { animation-delay: 400ms; }
+    @keyframes rise { from { transform: translateY(105%); } }
+    .hello { animation: hello-in .8s cubic-bezier(.34, 1.56, .64, 1) 1.1s both, bob 6s ease-in-out 2s infinite; }
+    .hello::after { animation: shine 6s ease-in-out 2.2s infinite; }
+    .hello .live { animation: live 2s ease-out infinite; }
+    @keyframes hello-in { from { opacity: 0; scale: 0.7; } }
+    @keyframes bob { 50% { translate: 0 -8px; } }
+    @keyframes shine { 0% { translate: -110% 0; } 28%, 100% { translate: 110% 0; } }
+    @keyframes live { 0% { box-shadow: 0 0 0 0 rgba(18, 161, 80, 0.5); } 70%, 100% { box-shadow: 0 0 0 7px rgba(18, 161, 80, 0); } }
+    @keyframes fade { from { opacity: 0; transform: translateY(12px); } }
+    @keyframes pop {
+        0% { opacity: 0; transform: translateY(70px) scale(0.82); }
+        6% { opacity: 1; }
+        52% { transform: translateY(-12px) scale(1.025); }
+        76% { transform: translateY(3px) scale(0.995); }
+        100% { opacity: 1; transform: none; }
+    }
+    .reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); transition-delay: calc(var(--d, 0) * 90ms); }
+    .reveal.in { opacity: 1; transform: none; }
+}
+
+/* ——— responsive ——— */
+@media (max-width: 980px) {
+    .pb-fixes { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .hero-grid { grid-template-columns: minmax(0, 1fr); }
+    .cluster { height: clamp(460px, 110vw, 620px); }
+    /* one column: the glow sits behind the phones instead of stretching into a stripe down the side */
+    .hero::before { inset: auto 0 0; height: 62%; background: radial-gradient(closest-side, rgba(47, 91, 255, 0.38), transparent); }
+}
+@media (max-width: 900px) {
+    .nav-links { display: none; }
+    .nav-pill { grid-template-columns: 1fr auto; }
+    .reason { grid-template-columns: minmax(0, 1fr); gap: 14px; }
+    .reason .tile { width: 100%; margin-top: 6px; }
+    .setup-grid { grid-template-columns: minmax(0, 1fr); }
+    .setup-side { position: static; }
+}
+@media (max-width: 640px) {
+    .pb-paper { padding-inline-start: 70px; font-size: 17px; }
+    .pb-sheet { background-image: linear-gradient(to right, transparent 54px, var(--margin) 54px, var(--margin) 56px, transparent 56px), repeating-linear-gradient(to bottom, transparent 0 calc(var(--row) - 1px), var(--rule) calc(var(--row) - 1px) var(--row)); }
+    .pb-paper .t { width: 42px; }
+    .pb-app { padding-inline: 14px; }
+    .pb-tape { width: 90px; height: 28px; }
+    .pb-tape.l { left: -6px; }
+    .pb-tape.r { right: -6px; }
+    .pb-paper > div { gap: 12px; }
+}
+@media (max-width: 400px) {
+    .pb-paper { padding-inline-end: 10px; font-size: 16px; }
+}
+@media (max-width: 560px) {
+    .pb-fixes { grid-template-columns: minmax(0, 1fr); }
+    /* phones: the checks shrink to their titles so the phones start inside the first screen */
+    .hero h1 { margin-top: 8px; }
+    .hero .lede { margin-bottom: 20px; }
+    .proof { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-bottom: 26px; }
+    .proof li { display: flex; gap: 7px; }
+    .proof .ck { width: 17px; height: 17px; flex: none; }
+    .proof b { font-size: 14.5px; }
+    .proof span { display: none; }
+    .pb-fixes { margin-top: 40px; gap: 10px; }
+    /* the hero: one big phone in front, the other two peeking from behind it */
+    .cluster { height: min(150vw, 620px); margin-bottom: -18%; }
+    .cluster .d-main { height: 94%; }
+    .cluster .d-left { height: 74%; transform: translate(calc(-96% - var(--spread)), -44%); }
+    .cluster .d-right { height: 74%; transform: translate(calc(-4% + var(--spread)), -52%); }
+    /* the Day screen at a real phone's width: a narrower clock and smaller statuses so names fit */
+    .pb-row, .pb-rm { gap: 10px; }
+    .pb-clk { width: 60px; font-size: 16.5px; }
+    .pb-clk small { font-size: 9px; margin-inline-start: 2px; }
+    .pb-who b { font-size: 16px; }
+    .pb-who > span { font-size: 13px; }
+    .pb-st { font-size: 14px; gap: 4px; }
+    .pb-ci { height: 36px; padding-inline: 11px; font-size: 14px; gap: 4px; }
+    .pb-rm .wa { padding-inline: 12px; }
+    .pb-fixes li { grid-template-columns: 38px minmax(0, 1fr); align-items: center; gap: 14px; padding: 14px 16px; border-radius: 20px; }
+    .hello { left: 0; bottom: 18%; padding: 8px 16px 8px 8px; grid-template-columns: 38px auto; }
+    .hello .mark { width: 38px; height: 38px; }
+    .hello b { font-size: 13.5px; }
+    .hello small { font-size: 12px; }
+    .cluster .d-left { transform: translate(calc(-104% - var(--spread)), -46%); }
+    .cluster .d-right { transform: translate(calc(4% + var(--spread)), -54%); }
+    .nav .btn { height: 42px; padding-inline: 16px; font-size: 14px; }
+    .nav-pill { height: 56px; padding-inline: 16px 6px; grid-template-columns: 1fr auto; }
+    .logo svg { height: 26px; }
+}
+footer a { text-decoration: none; transition: color .2s; }
+footer a:hover { color: var(--ink-text); }
+</style>
+</head>
+<body>
+<header class="nav">
+    <div class="nav-pill">
+        <a class="logo" href="#top" aria-label="Lustre">
+            <svg viewBox="0 0 168 52" aria-hidden="true">
+                <path fill="currentColor" transform="translate(4,4) scale(0.36)" d="M42 2 L64 0 C52 31 41 67 34 93 C31.8 100.5 34.6 103 43.5 103 H55 L50.5 118 H9 C1 118 -1 113 1 106 C8 75 25 32 42 2 Z M63 103 H96 L100 118 H58.5 Z"/>
+                <g fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round" transform="translate(44 24.6738) scale(0.992099)">
+                    <path d="M1.1 0 V13.5 C1.1 18.6 3.8 21 9 21 C14.2 21 16.9 18.6 16.9 13.5 V0"/>
+                    <path transform="translate(25 0)" d="M16.6 3.2 C14.8 1.4 12.4 1 9.1 1 C4.5 1 1.3 3 1.3 6.1 C1.3 9.5 4.7 10.3 9.2 11.3 C13.8 12.3 16.8 13.7 16.8 16.6 C16.8 19.7 13.6 21 9.1 21 C5.5 21 2.8 20 .5 17.8"/>
+                    <path transform="translate(50 0)" d="M0 1.1 H19 M9.5 1.1 V22"/>
+                    <path transform="translate(77 0)" d="M1.1 22 V1.1 H9.1 C14.2 1.1 17 3.1 17 6.5 C17 9.9 14.2 12 9.1 12 H1.1 M10.8 14.7 L17.4 22"/>
+                    <path transform="translate(103 0)" d="M16.5 1.1 H1.1 V20.9 H16.5 M5.1 10.8 H15.1"/>
+                </g>
+            </svg>
+        </a>
+        <nav class="nav-links" aria-label="Sections">
+            <a href="#paper">Paper vs app</a>
+            <a href="#why">Why Lustre</a>
+            <a href="#setup">Setup</a>
+        </nav>
+        <div class="nav-end">
+            <button class="theme-toggle" type="button" aria-label="Switch to dark mode"><i class="ph ph-moon moon"></i><i class="ph ph-sun sun"></i></button>
+            <a class="btn btn-cta" href="#talk">Contact us</a>
         </div>
-
-        <h2>How it is put together</h2>
-        <p>
-            Two Android phones talk to a small server in the clinic over a private network. There is no
-            public website, no shared cloud database, and no account system — reaching the server at all
-            requires being on the practice's private network.
-        </p>
-        <p>
-            Patient records never leave that server except as an encrypted backup, described below.
-        </p>
-
-        <h2>What it uses a Google account for</h2>
-        <p>
-            One thing only: putting the nightly backup somewhere that is not the clinic. A fire, a theft
-            or a failed disk should not end a practice's records, and the off-site copy is what prevents
-            that.
-        </p>
-        <ul>
-            <li>
-                Lustre asks for a single Google permission, <code>drive.file</code>. That permission lets
-                an app see and manage <b>only the files it created itself</b> — it cannot list, open or
-                alter anything else in the account's Drive.
-            </li>
-            <li>
-                It creates one folder, <b>Lustre Clinic Backups</b>, writes the nightly backup into it,
-                and deletes old backups on a schedule so the folder does not grow forever.
-            </li>
-            <li>
-                Each backup is <b>encrypted before it leaves the clinic computer</b>, with a key that is
-                not stored on that computer and is not known to Google or to the developer.
-            </li>
-        </ul>
-        <p>
-            The dentist signs in once, with their own Google account, and can withdraw that access at any
-            time from <a href="https://myaccount.google.com/permissions">their Google account permissions</a>.
-        </p>
-
-        <h2>Privacy</h2>
-        <p>
-            What Lustre handles, where it is kept, and what is and is not done with it:
-            <a href="/privacy">Privacy policy</a>.
-        </p>
-
-        <footer>
-            <p>
-                Built and maintained by Youssef Hany Galal.
-                Source: <a
-                    href="https://github.com/lustre-systems/lustre-clinic">github.com/lustre-systems/lustre-clinic</a>.
-                Questions: <a href="mailto:hello@lustresystems.com">hello@lustresystems.com</a>.
-            </p>
-        </footer>
-
     </div>
-</Layout>
+</header>
+
+<main id="top">
+    <section class="hero">
+        <div class="wrap hero-grid">
+            <div>
+                <h1 aria-label="Clinic software your secretary will enjoy using.">
+                    <span class="w"><span style="--i:0">Clinic</span></span>
+                    <span class="w"><span style="--i:1">software</span></span>
+                    <span class="w"><span style="--i:2">your</span></span>
+                    <span class="w"><span style="--i:3">secretary</span></span>
+                    <span class="w"><span style="--i:4">will</span></span>
+                    <span class="w x" aria-hidden="true"><span style="--i:5"><span class="was">put up with</span></span></span>
+                    <span class="w"><span style="--i:18"><em>enjoy using.</em></span></span>
+                </h1>
+                <p class="lede">Every patient, visit and payment in one place, on the secretary's and the doctor's phones. Nothing lost in the margins of the book.</p>
+                <ul class="proof">
+                    <li><svg class="ck" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="currentColor"/><path d="M7.4 12.4l3.1 3.1 6.1-6.4" fill="none" stroke="var(--ink-card)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Trained in person</b><span>We stay until your whole team is comfortable.</span></li>
+                    <li><svg class="ck" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="currentColor"/><path d="M7.4 12.4l3.1 3.1 6.1-6.4" fill="none" stroke="var(--ink-card)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Kept in your clinic</b><span>On your own computer. We never hold your data.</span></li>
+                    <li><svg class="ck" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10.5" fill="currentColor"/><path d="M7.4 12.4l3.1 3.1 6.1-6.4" fill="none" stroke="var(--ink-card)" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Backed up nightly</b><span>An encrypted copy goes to the doctor's own Google Drive.</span></li>
+                </ul>
+                <div class="ctas">
+                    <a class="btn btn-primary" href="#talk">Contact us</a>
+                </div>
+            </div>
+            <div class="cluster" id="cluster">
+                <span class="shot d-left"><img src="/img/phone-record.webp" width="571" height="1320" alt="Lustre on a phone: a patient's record"></span>
+                <span class="shot d-right"><img src="/img/phone-money.webp" width="571" height="1320" alt="Lustre on a phone: the year's finances"></span>
+                <div class="hello">
+                    <svg class="mark" viewBox="0 0 512 512" aria-hidden="true"><defs><linearGradient id="hello-bone" x1="0" y1="0" x2="0" y2="1"><stop offset="25%" stop-color="#9E958A"/><stop offset="100%" stop-color="#F7F3EC"/></linearGradient><mask id="hello-c" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="118"><circle cx="50" cy="59" r="50" fill="#fff"/><ellipse cx="50" cy="59" rx="41" ry="28" fill="#000"/><polygon points="50,59 130,20 130,98" fill="#000"/><rect x="45" y="2" width="10" height="32" fill="#000" transform="rotate(-52 50 59)"/><rect x="45" y="2" width="10" height="32" fill="#000" transform="rotate(-128 50 59)"/></mask></defs><rect width="512" height="512" rx="112" fill="#14110F"/><g transform="translate(106,79) scale(3)"><rect x="0" y="9" width="100" height="100" fill="url(#hello-bone)" mask="url(#hello-c)"/></g></svg>
+                    <b><span class="live" aria-hidden="true"></span>Our first clinic is on board</b>
+                    <small>Your practice could be next.</small>
+                </div>
+                <span class="shot d-main"><img src="/img/phone-day.webp" width="753" height="1600" alt="Lustre on a phone: the day view" fetchpriority="high"></span>
+            </div>
+        </div>
+    </section>
+
+    <section class="ba pb" id="paper">
+        <div class="wrap">
+            <h2 class="reveal">Everything the paper book <em>let slip.</em></h2>
+            <p class="sub reveal" style="--d:1">The same Saturday, written twice.</p>
+            <div class="pb-desk reveal" style="--d:2">
+                <div class="pb-stage on-paper" id="pbStage">
+                    <span class="pb-tape l"></span><span class="pb-tape r"></span>
+                    <div class="pb-face">
+                        <div class="pb-sheet"></div>
+                        <div class="pb-canvas"></div>
+                        <div class="pb-paper" aria-hidden="true">
+                            <div class="head" data-k="head">Sat 26 Sep</div>
+                            <div data-k="nour"><span class="t">10:05</span>Nour A. filling</div>
+                            <div data-k="kareem"><span class="t">11:00</span>Kareem H. crown 2/2</div>
+                            <div data-k="mona"><span class="t">11:00</span><s>Mona?</s> <span class="red">clash!!</span></div>
+                            <div data-k="laila"><span class="t">11:45</span>Laila <span class="red">owes 300 (or 500?)</span></div>
+                            <div data-k="sara"><span class="t">1:10</span>Sara E. <span class="red">didn’t show?</span></div>
+                            <div data-k="rem"><span class="t"></span><span class="red">remind tmrw’s ppl!!</span></div>
+                        </div>
+                        <div class="pb-app">
+                            <div class="pb-screen">
+                                <div class="pb-topbar" data-k="head"><span><i class="ph ph-map-pin"></i>Main branch<i class="ph ph-caret-down"></i></span><span class="mono"><i class="ph ph-calendar-blank"></i>26 SEP<i class="ph ph-caret-down"></i></span></div>
+                                <div class="pb-seg" role="tablist" data-k="head">
+                                    <button type="button" role="tab" aria-selected="true" data-tab="today"><i class="ph ph-clock"></i><span>Today · <b>5</b></span></button>
+                                    <button type="button" role="tab" aria-selected="false" data-tab="rem"><i class="ph ph-chat-circle"></i><span>Reminders · <b data-count>5</b></span></button>
+                                </div>
+                                <div class="pb-pane" data-pane="today">
+                                    <div class="pb-eyebrow" data-k="head"><i class="ph ph-arrow-right"></i>THE DAY · 5</div>
+                                    <div class="pb-row" data-k="nour"><span class="pb-clk">10:05<small>AM</small></span><div class="pb-who"><b>Nour Abdelrahman</b><span><i class="ph ph-tooth"></i><span>Composite filling · 30 min</span></span></div><span class="pb-st ok"><i class="ph ph-check"></i>Done</span></div>
+                                    <div class="pb-row chair" data-k="kareem"><span class="pb-clk">11:00<small>AM</small></span><div class="pb-who"><b>Kareem Hassan</b><span><i class="ph ph-tooth"></i><span>Crown, 2 of 2 · 60 min</span></span></div><span class="pb-st accent"><i class="ph ph-tooth"></i>In chair</span></div>
+                                    <div class="pb-row" data-k="laila"><span class="pb-clk">11:45<small>AM</small></span><div class="pb-who"><b>Laila Mostafa</b><span><i class="ph ph-tooth"></i><span>Consultation · 30 min</span></span></div><span class="pb-st due"><i class="ph ph-coins"></i>Owes 300</span></div>
+                                    <div class="pb-row" data-k="mona"><span class="pb-clk">12:10<small>PM</small></span><div class="pb-who"><b>Mona Abdelrahman</b><span><i class="ph ph-tooth"></i><span>Consultation · 30 min</span></span></div><span class="pb-ci"><i class="ph ph-check"></i>Check in</span></div>
+                                    <div class="pb-row" data-k="sara"><span class="pb-clk">1:10<small>PM</small></span><div class="pb-who"><b>Sara Elmasry</b><span><i class="ph ph-tooth"></i><span>Follow-up · 20 min</span></span></div><span class="pb-st due"><i class="ph ph-user-minus"></i>No-show</span></div>
+                                </div>
+                                <div class="pb-pane" data-pane="rem" hidden>
+                                    <div class="pb-eyebrow"><i class="ph ph-arrow-right"></i>TOMORROW · <span data-count>5</span></div>
+                                    <div class="pb-rm"><div class="pb-who"><b>Youssef Ibrahim</b><span>Tomorrow · 10:00 AM</span></div><button type="button" class="x" aria-label="Skip Youssef Ibrahim’s reminder"><i class="ph ph-x"></i></button><button type="button" class="wa" aria-label="Send Youssef Ibrahim a reminder on WhatsApp"><i class="ph ph-whatsapp-logo"></i>WhatsApp</button></div>
+                                    <div class="pb-rm"><div class="pb-who"><b>Dina Ashraf</b><span>Tomorrow · 10:40 AM</span></div><button type="button" class="x" aria-label="Skip Dina Ashraf’s reminder"><i class="ph ph-x"></i></button><button type="button" class="wa" aria-label="Send Dina Ashraf a reminder on WhatsApp"><i class="ph ph-whatsapp-logo"></i>WhatsApp</button></div>
+                                    <div class="pb-rm"><div class="pb-who"><b>Rana Gamal</b><span>Tomorrow · 11:30 AM</span></div><button type="button" class="x" aria-label="Skip Rana Gamal’s reminder"><i class="ph ph-x"></i></button><button type="button" class="wa" aria-label="Send Rana Gamal a reminder on WhatsApp"><i class="ph ph-whatsapp-logo"></i>WhatsApp</button></div>
+                                    <div class="pb-rm"><div class="pb-who"><b>Omar Fathy</b><span>Tomorrow · 12:20 PM</span></div><button type="button" class="x" aria-label="Skip Omar Fathy’s reminder"><i class="ph ph-x"></i></button><button type="button" class="wa" aria-label="Send Omar Fathy a reminder on WhatsApp"><i class="ph ph-whatsapp-logo"></i>WhatsApp</button></div>
+                                    <div class="pb-rm"><div class="pb-who"><b>Hana Saeed</b><span>Tomorrow · 1:00 PM</span></div><button type="button" class="x" aria-label="Skip Hana Saeed’s reminder"><i class="ph ph-x"></i></button><button type="button" class="wa" aria-label="Send Hana Saeed a reminder on WhatsApp"><i class="ph ph-whatsapp-logo"></i>WhatsApp</button></div>
+                                    <div class="pb-empty" hidden><i class="ph ph-check"></i><b>Everyone has been messaged</b>No reminder is waiting to go out.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="pb-toggle" id="pbToggle"><span>See it in Lustre</span><i class="ph ph-arrow-right"></i></button>
+            </div>
+            <ul class="pb-fixes reveal" style="--d:3" id="pbFixes">
+                <li data-k="mona"><i class="ph ph-calendar-check"></i><p><b>No double-bookings.</b> 11:00 was taken, so Mona has 12:10.</p></li>
+                <li data-k="laila"><i class="ph ph-coins"></i><p><b>One balance on her file.</b> Not 300, or was it 500.</p></li>
+                <li data-k="sara"><i class="ph ph-user-minus"></i><p><b>Missed visits stay on screen</b> until someone follows up.</p></li>
+                <li data-k="rem"><i class="ph ph-chat-circle"></i><p><b>Tomorrow’s reminders are written.</b> She sends each one from her own WhatsApp.</p></li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="why" id="why">
+        <div class="wrap">
+            <h2 class="reveal">Why clinics pick Lustre.</h2>
+            <div class="reasons">
+                <div class="reason reveal">
+                    <h3><span>Quicker than</span> <em>the pen.</em></h3>
+                    <p>Booking, check-in and payment are made for a patient standing at the desk: a few taps, with one hand. If it were slower than writing in the book, nobody would use it.</p>
+                    <div class="tile race" aria-hidden="true">
+                        <div class="race-pen"><i class="ph ph-pen-nib"></i><span>12:10 Mona, came</span></div>
+                        <div class="race-tap"><span>Mona A.</span><b><i class="ph ph-check"></i><span class="a">Check in</span><span class="b">Checked in</span></b></div>
+                    </div>
+                </div>
+                <div class="reason reveal">
+                    <h3><span>We set it up.</span> <span>We <em>teach it.</em></span></h3>
+                    <p>Nobody at your clinic installs or configures anything. We do it in person, then stay until it feels normal. <a href="#setup">How setup works</a></p>
+                    <ol class="tile tile-steps" aria-hidden="true">
+                        <li><i class="ph ph-desktop-tower"></i>Install</li>
+                        <li><i class="ph ph-sliders-horizontal"></i>Set up</li>
+                        <li><i class="ph ph-chalkboard-teacher"></i>Teach</li>
+                    </ol>
+                </div>
+                <div class="reason reveal">
+                    <h3><span>Shaped by a</span> <em>real clinic.</em></h3>
+                    <p>Our first clinic is shaping every screen around how their front desk really runs. Your practice would be the next.</p>
+                    <ol class="tile clinics" aria-hidden="true">
+                        <li><b>01</b><span>Our first clinic</span></li>
+                        <li><b>02</b><span>Yours?</span></li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="setup" id="setup">
+        <div class="wrap setup-grid">
+            <div class="setup-side">
+                <p class="kicker reveal">Setup</p>
+                <h2 class="reveal" style="--d:1">From first call to <em>first patient.</em></h2>
+                <p class="quiet reveal" style="--d:2"><i class="ph ph-notebook"></i>And if it's ever down, the paper book still runs the day.</p>
+            </div>
+            <ol class="line" id="setupLine">
+                <li><span class="dot">1</span><h3>We set up the server</h3><p>On a computer at your clinic. Your records live there, reachable only over a private link, with an encrypted backup to the doctor's Google Drive every night.</p></li>
+                <li><span class="dot">2</span><h3>We install the app</h3><p>On the secretary's phone and the doctor's phone, connected to the server and tested from the front desk.</p></li>
+                <li><span class="dot">3</span><h3>We train your team</h3><p>A real day with your secretary and doctor: booking, check-in, payment, reminders. And the doctor learns to put in your procedures and prices.</p></li>
+                <li class="last"><span class="dot"><i class="ph ph-check"></i></span><h3>Your <em>first patient.</em></h3><p>She walks in, your secretary checks her in with one tap, and the paper book stays closed.</p></li>
+            </ol>
+        </div>
+    </section>
+
+    <section class="talk" id="talk">
+        <div class="wrap">
+            <h2 class="reveal">Let's set up <em>your clinic.</em></h2>
+            <p class="sub reveal" style="--d:1">Tell us a little about your clinic. We'll come by, set everything up, and train your team.</p>
+            <div class="ctas reveal" style="--d:2">
+                <a class="btn btn-cta" href="https://wa.me/201153535415?text=Hi%2C%20I%27d%20like%20to%20hear%20about%20Lustre%20for%20my%20clinic."><i class="ph ph-whatsapp-logo"></i>WhatsApp</a>
+                <a class="btn btn-ghost" href="mailto:hello@lustresystems.com?subject=Lustre%20for%20my%20clinic"><i class="ph ph-envelope-simple"></i>Email</a>
+            </div>
+            <div class="addr reveal" style="--d:3">
+                <div><span id="email-d">hello@lustresystems.com</span><button type="button" data-copy="email-d">copy</button></div>
+                <div><span id="wa-d">+20 115 353 5415</span><button type="button" data-copy="wa-d">copy</button></div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<footer>
+    <div class="wrap">
+        <span>Lustre Clinic. For Android, in English and Arabic.</span>
+        <span><a href="/privacy">Privacy</a><span aria-hidden="true"> · </span>© 2026 Lustre</span>
+    </div>
+</footer>
+
+<script is:inline>
+(() => {
+    const $ = (s, r = document) => r.querySelector(s);
+    const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    /* theme */
+    const root = document.documentElement;
+    const media = matchMedia('(prefers-color-scheme: dark)');
+    const tbtn = $('.theme-toggle');
+    const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : media.matches;
+    const syncTheme = () => { root.classList.toggle('is-dark', isDark()); tbtn.setAttribute('aria-label', isDark() ? 'Switch to light mode' : 'Switch to dark mode'); };
+    tbtn.addEventListener('click', () => { root.dataset.theme = isDark() ? 'light' : 'dark'; try { localStorage.setItem('lustre-theme', root.dataset.theme); } catch {} syncTheme(); });
+    media.addEventListener('change', syncTheme);
+    syncTheme();
+
+    /* hero: start the phones' pop once the page has loaded (so nothing else is fighting for the main thread) and their images are decoded, or after 2.5 s regardless */
+    const cluster = $('#cluster');
+    const loaded = document.readyState === 'complete' ? Promise.resolve() : new Promise((ok) => addEventListener('load', ok, { once: true }));
+    Promise.race([Promise.all([loaded, ...$$('.shot img', cluster).map((i) => i.decode().catch(() => {}))]), new Promise((ok) => setTimeout(ok, 2500))])
+        .then(() => requestAnimationFrame(() => requestAnimationFrame(() => cluster.classList.add('go'))));
+
+    /* the nav pill turns to dark glass while it's over the hero card */
+    const nav = $('.nav'), hero = $('.hero');
+    const navSync = () => nav.classList.toggle('over', hero.getBoundingClientRect().bottom > 70);
+    addEventListener('scroll', navSync, { passive: true });
+    navSync();
+
+    /* reveals */
+    const rio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); rio.unobserve(e.target); } }), { threshold: 0.15 });
+    $$('.reveal').forEach((el) => rio.observe(el));
+
+    /* setup: the line fills with the scroll, and each step lights when the fill reaches it */
+    const sline = $('#setupLine'), sitems = $$(':scope > li', sline);
+    const setupScroll = () => {
+        const mark = innerHeight * 0.55, r = sline.getBoundingClientRect();
+        sline.style.setProperty('--p', Math.min(1, Math.max(0, (mark - r.top - 22) / (r.height - 44))));
+        sitems.forEach((li) => li.classList.toggle('on', li.getBoundingClientRect().top + 22 <= mark));
+    };
+    addEventListener('scroll', setupScroll, { passive: true });
+    addEventListener('resize', setupScroll);
+    setupScroll();
+
+    /* copy */
+    $$('[data-copy]').forEach((btn) => btn.addEventListener('click', () => {
+        const el = document.getElementById(btn.dataset.copy);
+        const done = () => { btn.textContent = 'copied'; setTimeout(() => { btn.textContent = 'copy'; }, 1600); };
+        const select = () => { const r = document.createRange(); r.selectNodeContents(el); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
+        try { navigator.clipboard.writeText(el.textContent.trim()).then(done, select); } catch { select(); }
+    }));
+
+    /* the paper book: the taped page straightens into the Day screen, each line handing over to its row.
+       It plays by itself the first time it's well in view; the link under it flips it either way. */
+    {
+        const stage = $('#pbStage'), face = $('.pb-face', stage), paper = $('.pb-paper', stage), app = $('.pb-app', stage);
+        const canvas = $('.pb-canvas', stage), tapes = $$('.pb-tape', stage), fixes = $$('#pbFixes li');
+        const toggle = $('#pbToggle'), remTab = $('[data-tab="rem"]', stage);
+        const KEYS = ['head', 'nour', 'kareem', 'mona', 'laila', 'sara', 'rem'];
+        const clamp = (v) => Math.max(0, Math.min(1, v)), lerp = (a, b, t) => a + (b - a) * t;
+        const ease = (t) => 1 - Math.pow(1 - t, 3);
+        const inout = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+        let deltas = new Map(), p = 0, lit = false;
+
+        // How far each app element has to travel to start on its paper line, measured with nothing tilted.
+        const measure = () => {
+            const tilt = stage.style.rotate; stage.style.rotate = '0deg';
+            deltas = new Map();
+            $$('[data-k]', app).forEach((el) => {
+                const was = el.style.transform; el.style.transform = '';
+                const from = $(`[data-k="${el.dataset.k}"]`, paper);
+                deltas.set(el, el.dataset.k === 'head' ? 0 : from.getBoundingClientRect().top - el.getBoundingClientRect().top);
+                el.style.transform = was;
+            });
+            stage.style.rotate = tilt;
+        };
+        const set = (v) => {
+            p = v;
+            const t = inout(clamp(v / 0.6)), lift = clamp(v / 0.25);
+            stage.style.rotate = `${lerp(-2.2, 0, t)}deg`;
+            face.style.borderRadius = `${lerp(6, 28, t)}px`;
+            canvas.style.opacity = ease(clamp((v - 0.1) / 0.45));
+            tapes.forEach((tp, i) => { tp.style.opacity = 1 - lift; tp.style.translate = `${(i ? 20 : -20) * lift}px ${-16 * lift}px`; });
+            const ts = {};
+            KEYS.forEach((k, i) => {
+                const tk = ease(clamp((v - 0.15 - (i / KEYS.length) * 0.6) / 0.3));
+                ts[k] = tk;
+                const line = $(`[data-k="${k}"]`, paper);
+                line.style.opacity = 1 - tk;
+                line.style.transform = `translateX(${-14 * tk}px)`;
+                $$(`[data-k="${k}"]`, app).forEach((el) => {
+                    el.style.opacity = tk;
+                    el.style.transform = `translateY(${(deltas.get(el) || 0) * (1 - tk)}px)`;
+                });
+            });
+            fixes.forEach((li) => li.classList.toggle('on', ts[li.dataset.k] > 0.6));
+            if (ts.rem > 0.5 && !lit) { lit = true; remTab.classList.remove('lit'); void remTab.offsetWidth; remTab.classList.add('lit'); }
+            if (ts.rem < 0.1) lit = false;
+            stage.classList.toggle('on-app', v >= 1);
+            stage.classList.toggle('on-paper', v <= 0);
+        };
+
+        let raf = 0, target = 0;
+        const label = () => {
+            toggle.innerHTML = target
+                ? '<i class="ph ph-notebook"></i><span>Back to the paper book</span>'
+                : '<span>See it in Lustre</span><i class="ph ph-arrow-right"></i>';
+        };
+        const play = (to, dur) => {
+            target = to; label();
+            cancelAnimationFrame(raf);
+            if (reduce) { set(to); return; }
+            const from = p, t0 = performance.now(), d = dur * Math.abs(to - from);
+            if (!d) return;
+            const step = (now) => { const k = Math.min(1, (now - t0) / d); set(from + (to - from) * k); if (k < 1) raf = requestAnimationFrame(step); };
+            raf = requestAnimationFrame(step);
+        };
+
+        // Once someone has flipped it themselves it stays where they left it; until then it plays on
+        // arrival and quietly resets once it's off screen, so it plays again next time.
+        let touched = false, armed = true, timer = 0;
+        const flip = () => { touched = true; clearTimeout(timer); play(target ? 0 : 1, 2400); };
+        toggle.addEventListener('click', flip);
+        face.addEventListener('click', () => { if (p <= 0.5 && target === 0) flip(); });
+        new IntersectionObserver((es) => es.forEach((e) => {
+            if (e.intersectionRatio >= 0.55 && armed && !touched) { armed = false; timer = setTimeout(() => play(1, 3200), 400); }
+            if (!e.isIntersecting && !touched) { clearTimeout(timer); cancelAnimationFrame(raf); armed = true; target = 0; label(); set(0); }
+        }), { threshold: [0, 0.55] }).observe(stage);
+
+        measure(); set(0);
+        const remeasure = () => { measure(); set(p); };
+        addEventListener('resize', remeasure);
+        document.fonts?.ready.then(remeasure);
+
+        // The screen works once it's there: the tabs switch, and a sent or skipped reminder leaves.
+        const tabs = $$('[data-tab]', stage), counts = $$('[data-count]', stage);
+        tabs.forEach((b) => b.addEventListener('click', () => {
+            tabs.forEach((t) => t.setAttribute('aria-selected', String(t === b)));
+            $$('[data-pane]', stage).forEach((pane) => { pane.hidden = pane.dataset.pane !== b.dataset.tab; });
+        }));
+        $$('.pb-rm button', stage).forEach((b) => b.addEventListener('click', () => {
+            const r = b.closest('.pb-rm');
+            if (r.classList.contains('gone')) return;
+            r.classList.add('gone');
+            setTimeout(() => {
+                r.remove();
+                const left = $$('.pb-rm', stage).length;
+                counts.forEach((c) => { c.textContent = left; });
+                if (!left) $('.pb-empty', stage).hidden = false;
+            }, 300);
+        }));
+    }
+
+    /* phones spread as the hero scrolls away */
+    if (!reduce) {
+        let spreadQueued = false;
+        const spread = () => {
+            spreadQueued = false;
+            const r = hero.getBoundingClientRect();
+            cluster.style.setProperty('--spread', `${Math.min(1, Math.max(0, -r.top / r.height)) * 60}px`);
+        };
+        addEventListener('scroll', () => { if (!spreadQueued) { spreadQueued = true; requestAnimationFrame(spread); } }, { passive: true });
+        spread();
+    }
+
+    /* touch screens have no hover, so each reason's tile plays once it's well in view */
+    if (matchMedia('(hover: none)').matches) {
+        const lio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { setTimeout(() => e.target.classList.add('lit'), 500); lio.unobserve(e.target); } }), { threshold: 0.7 });
+        $$('.reason').forEach((el) => lio.observe(el));
+    }
+})();
+</script>
+</body>
+</html>

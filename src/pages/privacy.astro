@@ -12,28 +12,30 @@ import Layout from '../layouts/Layout.astro';
             <span class="eyebrow">Lustre Clinic</span>
             <h1>Privacy policy</h1>
             <p class="lede">
-                Lustre is clinic management software used by one dental practice. This page says what it
-                handles, where that is kept, and what is done with access to a Google account.
+                Lustre is clinic management software for dental practices. This page says what it handles,
+                where that is kept, and what is done with access to a Google account. It also covers this
+                website.
             </p>
-            <p class="meta">Last updated 20 September 2026.</p>
+            <p class="meta">Last updated 1 October 2026.</p>
         </header>
 
         <h2>Who this is</h2>
         <p>
-            Lustre is built and maintained by Youssef Hany Galal. It is not a public service: it is not
-            sold, not listed on any app store, and has no sign-up. It runs for a single dental practice,
-            on a computer that practice owns, and is used by its dentist and secretary.
+            Lustre is built and maintained by Youssef Hany Galal. It is offered to dental practices and
+            set up at each one in person. There is no public sign-up and no shared online service: every
+            clinic runs its own copy, on a computer that clinic owns, used by its own dentist and
+            secretary. One clinic's copy has no connection to another's.
         </p>
 
         <h2>Clinic records</h2>
         <p>
-            The practice's own records — patients, appointments, visits, procedures and payments — are
-            stored in a database on a computer inside the clinic. That computer belongs to the practice.
+            Each clinic's records — patients, appointments, visits, procedures and payments — are stored
+            in a database on a computer inside that clinic. That computer belongs to the clinic.
         </p>
         <ul>
             <li>These records are <b>not</b> sent to the developer, and are not hosted on any cloud service.</li>
-            <li>Reaching the software requires being on the practice's private network. There is no public address.</li>
-            <li>The practice is the controller of its own patient data and is responsible for it.</li>
+            <li>Reaching the software requires being on that clinic's private network. There is no public address.</li>
+            <li>Each clinic is the controller of its own patient data and is responsible for it.</li>
         </ul>
         <p>
             The one exception is the off-site backup described next, and it is encrypted.
@@ -73,7 +75,7 @@ import Layout from '../layouts/Layout.astro';
 
         <h3>Credentials</h3>
         <p>
-            When the dentist signs in, Google issues a refresh token. That token is stored on the
+            When a clinic's dentist signs in, Google issues a refresh token. That token is stored on the
             clinic's own server, in a file readable only by the account the server runs as. It is not
             transmitted to the developer and is not stored on any phone. Short-lived access tokens are
             held in memory only and never written to disk.
@@ -119,6 +121,20 @@ import Layout from '../layouts/Layout.astro';
             are excluded.
         </p>
 
+        <h2>This website</h2>
+        <p>
+            lustresystems.com sets no cookies and runs no analytics, advertising or tracking. It remembers
+            a light or dark choice in your own browser, and nothing else. Its fonts come from Google Fonts
+            and its icons from unpkg, which, like any web server, see your IP address when they send them.
+        </p>
+
+        <h2>If you contact us</h2>
+        <p>
+            If you write to us by email or WhatsApp, we use what you send only to reply and to talk with
+            you about setting Lustre up at your clinic. It is not shared, sold, or added to any mailing
+            list.
+        </p>
+
         <h2>Changes</h2>
         <p>
             If what the software does with Google account data changes, this page changes with it, and
@@ -132,7 +148,7 @@ import Layout from '../layouts/Layout.astro';
 
         <footer>
             <p>
-                <a href="/">Lustre Clinic</a> ·
+                <a href="/">Lustre</a> ·
                 <a href="https://github.com/lustre-systems/lustre-clinic">Source</a>
             </p>
         </footer>
