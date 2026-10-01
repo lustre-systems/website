@@ -1,0 +1,13 @@
+// Cloudflare deploy: the static build in dist/, served as a Worker with static assets
+// (what Cloudflare Pages has become). Deploy with `bun run build && bunx wrangler deploy`.
+{
+    "$schema": "node_modules/wrangler/config-schema.json",
+    "name": "lustre-website",
+    "compatibility_date": "2026-10-01",
+    "assets": {
+        "directory": "./dist",
+        // /privacy is linked from Google's OAuth consent screen, so it's served as-is, without a redirect.
+        "html_handling": "drop-trailing-slash"
+    },
+    "routes": [{ "pattern": "lustresystems.com", "custom_domain": true }]
+}
