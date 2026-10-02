@@ -1,5 +1,5 @@
 ---
-// The public landing page. It began as drafts/opus-5-5/i-mine.html and is edited here from now on.
+// The public landing page.
 // It's a whole document of its own rather than a Layout page: the docs styles would fight it.
 const title = 'Lustre · Clinic software your secretary will enjoy using';
 const description = "Appointments, patients and payments for dental clinics, on the secretary's and the doctor's phones. Kept on a computer at your clinic, backed up encrypted to the doctor's Google Drive. We set it up and train your team.";
@@ -37,10 +37,9 @@ try { const t = localStorage.getItem('lustre-theme'); if (t === 'light' || t ===
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,600&family=DM+Mono:wght@400;500&family=Kalam:wght@400;700&display=swap">
 <link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
 <style is:global>
-/* The landing page, moved from drafts/opus-5-5/i-mine.html (edit it here now). I: your own picks. Starts as H (D's base, A's checkmarks, F's sections) with a floating
-   pill bar like Pith's and the refined Lustre wordmark. The hero phones are stills rendered
+/* A floating pill bar with the Lustre wordmark. The hero phones are stills rendered
    from a real phone model, so there's no WebGL at runtime.
-   Below the hero: E's paper book (drag across), F's why, the setup timeline (C1 in setup-options.html), contact.
+   Below the hero: the paper book (drag across), the why, the setup timeline, contact.
    The hero is the day view's black card (NowCard.tsx) as a whole section, inset with rounded corners;
    the contact and footer are the same ink, edge to edge.
    Radius rule: interactive = pill, panels = 28px, devices = 46px. One accent (brand blue). */
@@ -260,7 +259,7 @@ h2 em { font-style: italic; font-weight: 600; color: var(--accent); padding-inli
 .hello::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: linear-gradient(105deg, transparent 38%, color-mix(in srgb, #fff 55%, transparent) 50%, transparent 62%); translate: -110% 0; }
 
 /* The phones are stills rendered from a Galaxy S25 Ultra model (public/img/, made by
-   drafts/renders/README.md), so the frames and sides are real without any WebGL. They drift
+   tools/phone-renders/README.md), so the frames and sides are real without any WebGL. They drift
    with the pointer at different depths and spread apart as the hero scrolls away. */
 .cluster { position: relative; height: clamp(520px, 62vw, 700px); --spread: 0px; }
 .cluster::after { content: ""; position: absolute; left: 12%; right: 12%; bottom: -1%; height: 9%; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--shadow) 70%, transparent), transparent); pointer-events: none; }

@@ -1,0 +1,102 @@
+<!doctype html>
+<meta charset="utf-8">
+<style>html,body{margin:0;background:transparent}</style>
+<canvas id="c"></canvas>
+<script type="importmap">
+{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/" } }
+</script>
+<script type="module">
+import * as THREE from 'three';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+
+const SCREEN_ASPECT = 0.0732 / 0.1584;
+const loadImage = (src) => new Promise((ok, fail) => { const i = new Image(); i.onload = () => ok(i); i.onerror = fail; i.src = src; });
+const screenTexture = (img, SPLIT) => {
+    const w = img.naturalWidth, h = Math.round(w / SCREEN_ASPECT), k = w / 540;
+    const c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d');
+    x.fillStyle = '#f4f4f6'; x.fillRect(0, 0, w, h);
+    /* a screenshot at the display's own size fills it; a shorter one is split at a quiet row and the gap filled */
+    if (SPLIT === undefined) x.drawImage(img, 0, 0, w, h);
+    else {
+        const split = Math.round(SPLIT * k), rest = img.naturalHeight - split;
+        x.drawImage(img, 0, 0, w, split, 0, 0, w, split);
+        x.drawImage(img, 0, split, w, rest, 0, h - rest, w, rest);
+    }
+    const t = new THREE.CanvasTexture(c);
+    /* no mipmaps: the phone is rendered big enough that the screen is drawn at or above the screenshot's size, and mipmaps only blur it */
+    t.colorSpace = THREE.SRGBColorSpace; t.generateMipmaps = false; t.minFilter = THREE.LinearFilter;
+    return t;
+};
+
+const renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('c'), antialias: true, alpha: true, preserveDrawingBuffer: true });
+renderer.setPixelRatio(1);
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.setClearColor(0x000000, 0);
+const scene = new THREE.Scene();
+scene.environment = new THREE.PMREMGenerator(renderer).fromScene(new RoomEnvironment(), 0.04).texture;
+const key = new THREE.DirectionalLight(0xffffff, 1.4); key.position.set(-3, 4, 5); scene.add(key);
+
+const gltf = await new GLTFLoader().setMeshoptDecoder(MeshoptDecoder).loadAsync('./s25-ultra.glb');
+gltf.scene.traverse((o) => {
+    if (!o.isMesh) return;
+    if ('transmission' in o.material) o.material.transmission = 0;
+    if (o.material.name !== 'Display_ActiveArea') return;
+    const g = o.geometry, pos = g.attributes.position;
+    g.computeBoundingBox();
+    const { min, max } = g.boundingBox, uv = new Float32Array(pos.count * 2);
+    for (let i = 0; i < pos.count; i++) { uv[i * 2] = (pos.getX(i) - min.x) / (max.x - min.x); uv[i * 2 + 1] = (pos.getY(i) - min.y) / (max.y - min.y); }
+    g.setAttribute('uv', new THREE.BufferAttribute(uv, 2));
+});
+const box = new THREE.Box3().setFromObject(gltf.scene), size = box.getSize(new THREE.Vector3());
+gltf.scene.position.sub(box.getCenter(new THREE.Vector3()));
+const phone = new THREE.Group(); phone.add(gltf.scene); phone.scale.setScalar(2 / size.y);
+scene.add(phone);
+const screen = new THREE.MeshBasicMaterial({ toneMapped: false });
+/* the cover glass: a faint fade from the top corner and a soft diagonal glare, screen-blended over the display
+   (dst + src * (1 - dst)), so like real glass it shows on the dark cards and all but vanishes on white */
+const glare = new THREE.MeshBasicMaterial({
+    transparent: true, depthWrite: false, toneMapped: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2,
+    blending: THREE.CustomBlending, blendEquation: THREE.AddEquation, blendSrc: THREE.OneMinusDstColorFactor, blendDst: THREE.OneFactor,
+    blendSrcAlpha: THREE.ZeroFactor, blendDstAlpha: THREE.OneFactor,
+});
+gltf.scene.traverse((o) => {
+    if (!o.isMesh || o.material.name !== 'Display_ActiveArea') return;
+    o.material = screen;
+    const glass = new THREE.Mesh(o.geometry, glare); glass.renderOrder = 1; o.add(glass);
+});
+const glareTexture = (at, strength) => {
+    const w = 512, h = Math.round(w / SCREEN_ASPECT), c = document.createElement('canvas'); c.width = w; c.height = h;
+    const x = c.getContext('2d'), a = (v) => `rgba(255,255,255,${(v * strength).toFixed(3)})`;
+    const fade = x.createLinearGradient(0, 0, w * 0.9, h * 0.55);
+    fade.addColorStop(0, a(0.07)); fade.addColorStop(1, a(0));
+    x.fillStyle = fade; x.fillRect(0, 0, w, h);
+    /* the glare runs corner to corner across the screen: a soft rise and a crisper falling edge */
+    const band = x.createLinearGradient(0, 0, w, h * 0.5);
+    band.addColorStop(Math.max(0, at - 0.16), a(0)); band.addColorStop(at, a(0.15)); band.addColorStop(Math.min(1, at + 0.012), a(0));
+    x.fillStyle = band; x.fillRect(0, 0, w, h);
+    /* premultiplied, so the glare's colour is its strength: the blend above doesn't apply alpha */
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.premultiplyAlpha = true;
+    return t;
+};
+
+const camera = new THREE.PerspectiveCamera(18, 1, 0.5, 50);
+
+/* render one phone: rotation in radians; output is cropped to the phone's bounds by the caller */
+window.renderPhone = async ({ src, split, ry, rx = 0, rz = 0, height = 2400, sheen = 1 }) => {
+    screen.map = screenTexture(await loadImage(src), split); screen.needsUpdate = true;
+    /* the glare sits where a light in the room would catch it, so it shifts as the phone turns */
+    glare.map = glareTexture(0.42 + ry * 0.3, sheen); glare.needsUpdate = true;
+    phone.rotation.set(rx, ry, rz);
+    const w = Math.round(height * 0.75);
+    renderer.setSize(w, height, false);
+    camera.aspect = w / height;
+    camera.position.set(0, 0, 2.75 / (2 * Math.tan(THREE.MathUtils.degToRad(9))));
+    camera.lookAt(0, 0, 0); camera.updateProjectionMatrix();
+    renderer.render(scene, camera);
+    return renderer.domElement.toDataURL('image/png');
+};
+window.ready = true;
+</script>

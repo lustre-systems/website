@@ -11,7 +11,6 @@ Its `PRODUCT.md` is the product truth: read it before writing any claim about wh
 - Use `bun` only. Never npm, yarn or pnpm.
 - Before calling a task done, run `bun run build` and make sure it passes.
 - `/privacy` is linked from Google's OAuth consent screen. Keep it reachable, and don't change what it says about Google account data without saying so.
-- `drafts/` is reference only. Nothing there is built or deployed.
 
 ## Development
 
